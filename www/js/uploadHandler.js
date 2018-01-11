@@ -1,5 +1,8 @@
+/**
+ * The image upload handler
+ */
 function uploadPhoto() {
-    if (documentPath == null) {
+    if (imagePath == null) {
         document.getElementById('message').innerHTML = "No Data";
     }
 
@@ -7,18 +10,13 @@ function uploadPhoto() {
 
     var fileUploadOptions = new FileUploadOptions();
     fileUploadOptions.fileKey = "image";
-    fileUploadOptions.fileName = documentPath.substr(documentPath.lastIndexOf('/') + 1);
+    fileUploadOptions.fileName = documentPath.substr(imagePath.lastIndexOf('/') + 1);
     fileUploadOptions.mimeType = "image/png";
     fileUploadOptions.chunkedMode = true;
 
-    // // Additional Info to Server using JSON Object. This is Optional.
-    // var myObj = { "Param1": "FileUploder", "CurrentMode": 0, "Data": "", "TokenForUpload": “0000000” };
-    // var jsonData = JSON.stringify(myObj);
-
-    // fileUploadOptions.params = new Object();
-    // fileUploadOptions.params.CurrentData = jsonData;
-
     var fileTransfer = new FileTransfer();
+
+    // Uncomment below when adding the progressbar
 
     // var progressBar = document.querySelector('progress');
 
@@ -33,18 +31,21 @@ function uploadPhoto() {
     // progressBar.textContent = progressBar.value;
     // $("#spResult").text("");
 
-    fileTransfer.upload(documentPath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
+    fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
 }
 
 /**
  * Success callback for upload
- * @param  {[type]} r [description]
- * @return None
+ * @param r : the response object
  */
-function uploadPhotoWin(r) {
-    document.getElementById('message').innerHTML = "Sent = " + r.bytesSent + "\n Response = " + r.response + "\n Code = " + r.responseCode + "\n";
+function uploadPhotoWin(res) {
+    document.getElementById('message').innerHTML = "Sent = " + res.bytesSent + "\n Response = " + res.response + "\n Code = " + res.responseCode + "\n";
 }
 
+/**
+ * Error callback for upload
+ * @param error : the received error object
+ */
 function uploadPhotoFail(error) {
     switch (error.code) {
         case FileTransferError.FILE_NOT_FOUND_ERR:
