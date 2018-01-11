@@ -1,0 +1,10 @@
+
+img#imagePlaceholder {
+    display: block;
+    margin: 0 auto;
+}
+
+div[class*="col"] {
+    text-align: center;
+    /*border: 1px solid #ddd;*/
+}

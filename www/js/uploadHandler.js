@@ -10,7 +10,7 @@ function uploadPhoto() {
 
     var fileUploadOptions = new FileUploadOptions();
     fileUploadOptions.fileKey = "image";
-    fileUploadOptions.fileName = documentPath.substr(imagePath.lastIndexOf('/') + 1);
+    fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
     fileUploadOptions.mimeType = "image/png";
     fileUploadOptions.chunkedMode = true;
 
