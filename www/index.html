@@ -16,41 +16,41 @@
         <script type="text/javascript" charset="utf-8" src="js/camHandler.js"></script>
         <script type="text/javascript" charset="utf-8" src="js/uploadHandler.js"></script>
         <script type="text/javascript" charset="utf-8">
-        var pictureSource;   // picture source
-        var destinationType; // sets the format of returned value
+            var pictureSource;   // available image sources
+            var destinationType; // available formats of the returned images
+            var imagePath; // the URI of the current image
 
-        var documentPath;
+            // Wait for device API libraries to load
+            document.addEventListener("deviceready", onDeviceReady, false);
 
-        // Wait for device API libraries to load
-        document.addEventListener("deviceready", onDeviceReady, false);
+            /**
+             * The device ready event callback
+             */
+            function onDeviceReady() {
+                pictureSource = navigator.camera.PictureSourceType;
+                destinationType = navigator.camera.DestinationType;
 
-        // device APIs are available
-        function onDeviceReady() {
-            pictureSource=navigator.camera.PictureSourceType;
-            destinationType=navigator.camera.DestinationType;
+                setInitialImage();
+            }
 
-            setInitialImage();
-        }
-
-        function setInitialImage() {
-            var largeImage = document.getElementById('largeImage');
-
-            largeImage.style.display = 'block';
-            largeImage.src = "img/no-image.jpg";
-        }
+            /**
+             * Sets the 'No Image' icon to the image placeholder
+             */
+            function setInitialImage() {
+                placeImage("img/no-image.jpg");
+            }
         </script>
     </head>
     <body>
         <div id="mainContainer">
-            <img style="display:none;width:350px;" id="largeImage" src="" /><br><br>
-            <img style="display:none;width:60px;height:60px;" id="smallImage" src="" /><br>
+            <img style="display:none;width:350px;" id="imagePlaceholder" src="" /><br><br>
             <span id="message"></span><br><br>
-            <!-- <button onclick="capturePhoto();">Capture Photo</button> <br> -->
-            <button onclick="capturePhotoWithURI();"><i class="material-icons md-48">photo_camera</i></button><br>
-            <!-- <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
+            <button onclick="capturePhotoURI();"><i class="material-icons md-48">photo_camera</i></button><br>
+            <button onclick="uploadPhoto();"><i class="material-icons md-48">file_upload</i></button><br><br>
+            <!-- <button onclick="capturePhoto();">Capture Photo</button> <br>
+            <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
             <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
             <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br> -->
-            <button onclick="uploadPhoto();"><i class="material-icons md-48">file_upload</i></button><br><br>
         </div>
     </body>
 </html>

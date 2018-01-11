@@ -15,7 +15,7 @@ function onPhotoDataSuccess(imageData) {
 function onPhotoURISuccess(imageURI) {
     placeImage(imageURI);
 
-    documentPath = imageURI;
+    imagePath = imageURI;
 
     // Uncomment to view the imageURI
     // document.getElementById('message').innerHTML = imageURI;
