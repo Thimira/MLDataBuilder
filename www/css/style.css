@@ -2,9 +2,28 @@
 img#imagePlaceholder {
     display: block;
     margin: 0 auto;
+    max-width:350px;
+    max-height: 350px;
+}
+
+div.imageContainer {
+    display: block;
+    height: 56px;
 }
 
 div[class*="col"] {
     text-align: center;
     /*border: 1px solid #ddd;*/
 }
+
+.bottomButtons {
+    position: fixed;
+    bottom: 56px;
+}
+
+.centerBlock {
+    display: block;
+    margin: 0 auto;
+    /*width: calc(100% - (16px * 2));*/
+}
+

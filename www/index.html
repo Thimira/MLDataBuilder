@@ -4,7 +4,8 @@
         <!-- Required meta tags-->
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover" />
         <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
-        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:;" />
 
         <meta charset="utf-8" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -70,21 +71,29 @@
                         </div>
                     </div>
 
+                    <div class="fab fab-center-bottom color-orange">
+                        <a href="#" style="width: 76px; height: 76px; border-radius: 38px;" onclick="capturePhotoURI();">
+                            <i class="material-icons md-48">photo_camera</i>
+                        </a>
+                    </div>
+
+                    <div class="fab fab-left-bottom color-orange" onclick="uploadPhoto();">
+                        <a href="#">
+                            <i class="material-icons md-36">file_upload</i>
+                        </a>
+                    </div>
+
                     <!-- Scrollable page content -->
                     <div class="page-content">
                         <div class="block">
-                            <img style="display:none;width:350px;" id="imagePlaceholder" src="" /><br>
                             <div class="block">
                                 <div class="row">
-                                    <div class="col"><span id="message">&nbsp;</span></div>
+                                    <div class="col">
+                                        <img style="display:none;" id="imagePlaceholder" src="" />
+                                    </div>
                                 </div>
-                                <div class="row color-theme-orange">
-                                    <div class="col-75">
-                                        <button class="button button-big button-fill" onclick="capturePhotoURI();"><i class="material-icons md-48">photo_camera</i></button>
-                                    </div>
-                                    <div class="col-25">
-                                        <button class="button button-big button-fill" onclick="uploadPhoto();"><i class="material-icons md-48">file_upload</i></button>
-                                    </div>
+                                <div class="row">
+                                    <div class="col"><span id="message">&nbsp;</span></div>
                                 </div>
                             </div>
                         </div>

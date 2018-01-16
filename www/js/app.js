@@ -9,9 +9,9 @@ var app = new Framework7({
     // App root element
     root: '#app',
     // App Name
-    name: 'My App',
+    name: 'ML Data Builder',
     // App id
-    id: 'com.myapp.test',
+    id: 'com.mldatabuilder.app',
     // Enable swipe panel
     panel: {
         swipe: 'left',
@@ -58,6 +58,10 @@ $$(document).on('deviceReady', function() {
 
 //     setInitialImage();
 // })
+
+$$(document).on('page:init', '.page[data-name="home"]', function (e) {
+    setInitialImage();
+});
 
 /**
  * Sets the 'No Image' icon to the image placeholder
