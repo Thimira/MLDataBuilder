@@ -18,19 +18,18 @@ function onPhotoURISuccess(imageURI) {
     imagePath = imageURI;
 
     // Uncomment to view the imageURI
-    // document.getElementById('message').innerHTML = imageURI;
     // $$('#message').text(imageURI);
 }
 
 function placeImage(imageSrc) {
     // Get the handle for the image element
-    var imageElement = document.getElementById('imagePlaceholder');
+    var imageElement = $$('#imagePlaceholder');
 
     // Unhide image element
-    imageElement.style.display = 'block';
+    imageElement.show();
 
     // Place the image on the placeholder
-    imageElement.src = imageSrc;
+    imageElement.attr("src", imageSrc);
 }
 
 /**
@@ -82,7 +81,7 @@ function getPhoto(source) {
 
 /**
  * Produce an alert message when an error occurs.
- * @param  {[type]} message : the message to display
+ * @param message : the message to display
  */
 function onFail(message) {
     alert('Image retrieval failed: ' + message);

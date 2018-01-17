@@ -3,8 +3,6 @@
  */
 function uploadPhoto() {
     if (imagePath == null) {
-        // document.getElementById('message').innerHTML = "No Data";
-
         var toastWithButton = app.toast.create({
             text: 'No image data found to upload',
             closeButton: true
@@ -48,7 +46,8 @@ function uploadPhoto() {
  * @param r : the response object
  */
 function uploadPhotoWin(res) {
-    document.getElementById('message').innerHTML = "Sent = " + res.bytesSent + "\n Response = " + res.response + "\n Code = " + res.responseCode + "\n";
+    var messageText = "Sent = " + res.bytesSent + " Response = " + res.response + " Code = " + res.responseCode;
+    $$('#message').text(messageText);
 }
 
 /**
@@ -58,13 +57,13 @@ function uploadPhotoWin(res) {
 function uploadPhotoFail(error) {
     switch (error.code) {
         case FileTransferError.FILE_NOT_FOUND_ERR:
-            document.getElementById('message').innerHTML = "Photo file not found";
+            $$('#message').text("Photo file not found");
             break;
         case FileTransferError.INVALID_URL_ERR:
-            document.getElementById('message').innerHTML = "Bad Photo URL";
+            $$('#message').text("Bad Photo URL");
             break;
         case FileTransferError.CONNECTION_ERR:
-            document.getElementById('message').innerHTML = "Connection error";
+            $$('#message').text("Connection error");
             break;
     }
 }
