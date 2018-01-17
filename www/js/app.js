@@ -69,3 +69,37 @@ $$(document).on('page:init', '.page[data-name="home"]', function (e) {
 function setInitialImage() {
     placeImage("img/no-image.jpg");
 }
+
+
+var pickerCollection = app.picker.create({
+    inputEl: '#picker-collection',
+    cols: [{
+        textAlign: 'center',
+        values: ['Supercars Dataset', 'Garden Flowers']
+    }]
+});
+
+var labelSets = {
+    Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
+    Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
+};
+
+var pickerLabel = app.picker.create({
+    inputEl: '#picker-label',
+    rotateEffect: true,
+    formatValue: function(values) {
+        return values[1];
+    },
+    cols: [{
+        textAlign: 'left',
+        values: ['Flowers', 'Cars'],
+        onChange: function(picker, labelSet) {
+            if (picker.cols[1].replaceValues) {
+                picker.cols[1].replaceValues(labelSets[labelSet]);
+            }
+        }
+    }, {
+        values: labelSets.Flowers,
+        width: 160,
+    }, ]
+});
