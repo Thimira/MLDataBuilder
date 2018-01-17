@@ -3,35 +3,44 @@
  */
 function uploadPhoto() {
     if (imagePath == null) {
-        document.getElementById('message').innerHTML = "No Data";
+        // document.getElementById('message').innerHTML = "No Data";
+
+        var toastWithButton = app.toast.create({
+            text: 'No image data found to upload',
+            closeButton: true
+        });
+
+        toastWithButton.open();
+    } else {
+        var postUrl = "http://10.98.204.74:3005/upload/";
+
+        var fileUploadOptions = new FileUploadOptions();
+        fileUploadOptions.fileKey = "image";
+        fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+        fileUploadOptions.mimeType = "image/png";
+        fileUploadOptions.chunkedMode = true;
+
+        var fileTransfer = new FileTransfer();
+
+        // Uncomment below when adding the progressbar
+
+        // var progressBar = document.querySelector('progress');
+
+        // fileTransfer.onprogress = function (result) {
+        //     var percent = (result.loaded / result.total) * 100;
+        //     percent = Math.round(percent);
+        //     progressBar.value = percent;
+        //     progressBar.textContent = progressBar.value;
+        // };
+
+        // progressBar.value = 0;
+        // progressBar.textContent = progressBar.value;
+        // $("#spResult").text("");
+
+        fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
     }
 
-    var postUrl = "http://10.98.204.74:3005/upload/";
 
-    var fileUploadOptions = new FileUploadOptions();
-    fileUploadOptions.fileKey = "image";
-    fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-    fileUploadOptions.mimeType = "image/png";
-    fileUploadOptions.chunkedMode = true;
-
-    var fileTransfer = new FileTransfer();
-
-    // Uncomment below when adding the progressbar
-
-    // var progressBar = document.querySelector('progress');
-
-    // fileTransfer.onprogress = function (result) {
-    //     var percent = (result.loaded / result.total) * 100;
-    //     percent = Math.round(percent);
-    //     progressBar.value = percent;
-    //     progressBar.textContent = progressBar.value;
-    // };
-
-    // progressBar.value = 0;
-    // progressBar.textContent = progressBar.value;
-    // $("#spResult").text("");
-
-    fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
 }
 
 /**

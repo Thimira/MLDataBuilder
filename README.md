@@ -28,6 +28,10 @@ PhoneGap / Apache Cordova
 
 Framework7 - v2.0.6
 
+## Build
+
+The app can be built from either the PhoneGap Desktop or PhoneGap CLI.
+
 ## Author
 
   - [Thimira Amaratunga](https://github.com/Thimira)
