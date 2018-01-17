@@ -19,6 +19,7 @@ function onPhotoURISuccess(imageURI) {
 
     // Uncomment to view the imageURI
     // document.getElementById('message').innerHTML = imageURI;
+    // $$('#message').text(imageURI);
 }
 
 function placeImage(imageSrc) {
