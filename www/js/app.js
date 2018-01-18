@@ -50,6 +50,7 @@ $$(document).on('deviceReady', function() {
 $$(document).on('page:init', '.page[data-name="home"]', function (e) {
     console.log('Home Loaded');
     setInitialImage();
+    setHomepageDataPickers();
 });
 
 $$(document).on('page:afterin', function (e) {
@@ -84,7 +85,10 @@ function buildLabelListItem(itemText) {
 }
 
 function addNewCollection() {
-
+    app.dialog.prompt('New Data Collection', function (collectionName) {
+        collectionSet.push(collectionName);
+        $$('.collectionList').children('ul').append('<li>' + collectionName + '</li>');
+    });
 }
 
 /**
@@ -101,32 +105,35 @@ var labelSets = {
     Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
 };
 
-var pickerCollection = app.picker.create({
-    inputEl: '#picker-collection',
-    rotateEffect: true,
-    cols: [{
-        textAlign: 'center',
-        values: ['Supercars Dataset', 'Garden Flowers']
-    }]
-});
+function setHomepageDataPickers() {
+    var pickerCollection = app.picker.create({
+        inputEl: '#picker-collection',
+        rotateEffect: true,
+        cols: [{
+            textAlign: 'center',
+            values: collectionSet
+        }]
+    });
 
-var pickerLabel = app.picker.create({
-    inputEl: '#picker-label',
-    rotateEffect: true,
-    formatValue: function(values) {
-        return values[1];
-    },
-    cols: [{
-        textAlign: 'left',
-        values: ['Flowers', 'Cars'],
-        onChange: function(picker, labelSet) {
-            if (picker.cols[1].replaceValues) {
-                picker.cols[1].replaceValues(labelSets[labelSet]);
+    var pickerLabel = app.picker.create({
+        inputEl: '#picker-label',
+        rotateEffect: true,
+        formatValue: function(values) {
+            return values[0] + " : " + values[1];
+        },
+        cols: [{
+            textAlign: 'left',
+            values: Object.keys(labelSets),
+            onChange: function(picker, labelSet) {
+                if (picker.cols[1].replaceValues) {
+                    picker.cols[1].replaceValues(labelSets[labelSet]);
+                }
             }
-        }
-    }, {
-        values: labelSets.Flowers,
-        width: 160,
-    }, ]
-});
+        }, {
+            values: labelSets.Flowers,
+            // width: 160,
+        }, ]
+    });
+}
+
 
