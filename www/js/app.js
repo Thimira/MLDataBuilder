@@ -18,6 +18,9 @@ var app = new Framework7({
     },
     // Add default routes
     routes: [{
+        path: '/',
+        url: 'index.html',
+    }, {
         path: '/about/',
         url: 'about.html',
     }, {
@@ -59,10 +62,7 @@ $$(document).on('page:afterin', function (e) {
 
     if (page == '/collections/') {
         console.log('Collections Loaded');
-        collectionSet.forEach(function(collection) {
-            $$('.collectionList').children('ul').append('<li>' + collection + '</li>');
-            console.log('Item ' + collection);
-        })
+        createVListCollections();
     }
 
     if (page == '/labels/') {
@@ -85,9 +85,9 @@ function buildLabelListItem(itemText) {
 }
 
 function addNewCollection() {
-    app.dialog.prompt('New Data Collection', function (collectionName) {
-        collectionSet.push(collectionName);
-        $$('.collectionList').children('ul').append('<li>' + collectionName + '</li>');
+    app.dialog.prompt('Add New Data Collection', function (collectionName) {
+        var newCollection = { title : collectionName };
+        virtualListCollections.appendItem(newCollection);
     });
 }
 
@@ -98,7 +98,9 @@ function setInitialImage() {
     placeImage("img/no-image.jpg");
 }
 
-var collectionSet = ['Supercars Dataset', 'Garden Flowers', 'Faces'];
+// var collectionSet = ['Supercars Dataset', 'Garden Flowers', 'Faces'];
+
+var collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Garden Flowers'}, { title: 'Faces'}];
 
 var labelSets = {
     Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
@@ -111,7 +113,7 @@ function setHomepageDataPickers() {
         rotateEffect: true,
         cols: [{
             textAlign: 'center',
-            values: collectionSet
+            values: collectionSet.map(x => x.title)
         }]
     });
 
@@ -137,3 +139,25 @@ function setHomepageDataPickers() {
 }
 
 
+
+var virtualListCollections;
+
+function createVListCollections() {
+    virtualListCollections = app.virtualList.create({
+        // List Element
+        el: '.virtual-list.collectionList',
+        // Pass array with items
+        items: collectionSet,
+        // Custom search function for searchbar
+        // searchAll: function (query, items) {
+        //     var found = [];
+        //     for (var i = 0; i < items.length; i++) {
+        //         if (items[i].title.toLowerCase().indexOf(query.toLowerCase()) >= 0 || query.trim() === '') found.push(i);
+        //     }
+        //     return found; //return array with mathced indexes
+        // },
+        // List item Template7 template
+        itemTemplate: '<li>{{title}}</li>',
+    });
+
+}
