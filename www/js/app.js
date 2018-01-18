@@ -23,6 +23,9 @@ var app = new Framework7({
     }, {
         path: '/labels/',
         url: 'labels.html',
+    }, {
+        path: '/collections/',
+        url: 'collections.html',
     }, ],
     view: {
         pushState: true, // device back button will bring you to the main page
@@ -44,24 +47,45 @@ $$(document).on('deviceReady', function() {
     setInitialImage();
 });
 
-
-// Now we need to run the code that will be executed only for About page.
-
-// Option 1. Using page callback for page (for "about" page in this case) (recommended way):
-// myApp.onPageInit('about', function (page) {
-//     // Do something here for "about" page
-
-// });
-
-// myApp.onPageInit('index', function (page) {
-//     // Do something here for "about" page
-
-//     setInitialImage();
-// })
-
 $$(document).on('page:init', '.page[data-name="home"]', function (e) {
+    console.log('Home Loaded');
     setInitialImage();
 });
+
+$$(document).on('page:afterin', function (e) {
+    var page = app.views.main.router.url;
+    console.log(page);
+
+    if (page == '/collections/') {
+        console.log('Collections Loaded');
+        collectionSet.forEach(function(collection) {
+            $$('.collectionList').children('ul').append('<li>' + collection + '</li>');
+            console.log('Item ' + collection);
+        })
+    }
+
+    if (page == '/labels/') {
+        console.log('Labels Loaded');
+        for (var lset in labelSets) {
+            if(labelSets.hasOwnProperty(lset)) {
+                console.log(labelSets[lset]);
+            }
+        }
+    }
+});
+
+function buildLabelSets(setName, setItems) {
+
+}
+
+function buildLabelListItem(itemText) {
+    var listItemHTML = '<li><div class="item-content"><div class="item-inner"><div class="item-title">' + itemText + '</div></div></div></li>';
+    return listItemHTML;
+}
+
+function addNewCollection() {
+
+}
 
 /**
  * Sets the 'No Image' icon to the image placeholder
@@ -70,19 +94,21 @@ function setInitialImage() {
     placeImage("img/no-image.jpg");
 }
 
-
-var pickerCollection = app.picker.create({
-    inputEl: '#picker-collection',
-    cols: [{
-        textAlign: 'center',
-        values: ['Supercars Dataset', 'Garden Flowers']
-    }]
-});
+var collectionSet = ['Supercars Dataset', 'Garden Flowers', 'Faces'];
 
 var labelSets = {
     Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
     Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
 };
+
+var pickerCollection = app.picker.create({
+    inputEl: '#picker-collection',
+    rotateEffect: true,
+    cols: [{
+        textAlign: 'center',
+        values: ['Supercars Dataset', 'Garden Flowers']
+    }]
+});
 
 var pickerLabel = app.picker.create({
     inputEl: '#picker-label',
