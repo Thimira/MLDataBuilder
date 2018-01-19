@@ -51,22 +51,22 @@ $$(document).on('deviceReady', function() {
 });
 
 $$(document).on('page:init', '.page[data-name="home"]', function (e) {
-    console.log('Home Loaded');
+    // console.log('Home Loaded');
     setInitialImage();
     setHomepageDataPickers();
 });
 
 $$(document).on('page:afterin', function (e) {
     var page = app.views.main.router.url;
-    console.log(page);
+    // console.log(page);
 
     if (page == '/collections/') {
-        console.log('Collections Loaded');
+        // console.log('Collections Loaded');
         createVListCollections();
     }
 
     if (page == '/labels/') {
-        console.log('Labels Loaded');
+        // console.log('Labels Loaded');
         for (var lset in labelSets) {
             if(labelSets.hasOwnProperty(lset)) {
                 console.log(labelSets[lset]);
@@ -88,6 +88,12 @@ function addNewCollection() {
     app.dialog.prompt('Add New Data Collection', function (collectionName) {
         var newCollection = { title : collectionName };
         virtualListCollections.appendItem(newCollection);
+    });
+}
+
+function deleteCollection(itemIndex) {
+    app.dialog.confirm('Are you sure you want to delete?', function () {
+        virtualListCollections.deleteItem(itemIndex);
     });
 }
 
@@ -157,7 +163,17 @@ function createVListCollections() {
         //     return found; //return array with mathced indexes
         // },
         // List item Template7 template
-        itemTemplate: '<li>{{title}}</li>',
+        // itemTemplate: '<li>{{title}}</li>',
+        renderItem: function (item, index) {
+            return '<li class="swipeout">' +
+                        '<div class="swipeout-content item-content">' +
+                            '<div class="item-inner">' + item.title + '</div>' +
+                        '</div>' +
+                        '<div class="swipeout-actions-right">' +
+                            '<a href="#" class="color-red" onclick="deleteCollection(' + index + ')">Delete</a>' +
+                        '</div>' +
+                    '</li>';
+        },
     });
 
 }
