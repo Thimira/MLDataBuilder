@@ -29,6 +29,9 @@ var app = new Framework7({
     }, {
         path: '/collections/',
         url: 'collections.html',
+    }, {
+        path: '/settings/',
+        url: 'settings.html',
     }, ],
     view: {
         pushState: true, // device back button will bring you to the main page
@@ -113,14 +116,27 @@ var labelSets = {
     Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
 };
 
+var selectedCollection;
+var selectedLabel = [];
+
 function setHomepageDataPickers() {
     var pickerCollection = app.picker.create({
         inputEl: '#picker-collection',
         rotateEffect: true,
         cols: [{
             textAlign: 'center',
-            values: collectionSet.map(x => x.title)
-        }]
+            values: collectionSet.map(x => x.title),
+            onChange: function(picker, selCollection) {
+                selectedCollection = selCollection;
+            }
+        }],
+        on: {
+            init: function(picker) {
+                if (selectedCollection) {
+                    picker.setValue([selectedCollection]);
+                }
+            }
+        },
     });
 
     var pickerLabel = app.picker.create({
