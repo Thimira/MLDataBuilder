@@ -71,6 +71,7 @@ $$(document).on('page:afterin', function (e) {
             pickerLabel.destroy();
         }
         setHomepageDataPickers();
+        // console.log(labelSets);
     }
 
     if (page == '/collections/') {
@@ -80,22 +81,10 @@ $$(document).on('page:afterin', function (e) {
 
     if (page == '/labels/') {
         // console.log('Labels Loaded');
-        for (var lset in labelSets) {
-            if(labelSets.hasOwnProperty(lset)) {
-                console.log(labelSets[lset]);
-            }
-        }
+        createVListLabelSets();
     }
 });
 
-function buildLabelSets(setName, setItems) {
-
-}
-
-function buildLabelListItem(itemText) {
-    var listItemHTML = '<li><div class="item-content"><div class="item-inner"><div class="item-title">' + itemText + '</div></div></div></li>';
-    return listItemHTML;
-}
 
 function addNewCollection() {
     app.dialog.prompt('Add New Data Collection', function (collectionName) {
@@ -107,6 +96,15 @@ function addNewCollection() {
 function deleteCollection(itemIndex) {
     app.dialog.confirm('Are you sure you want to delete?', function () {
         virtualListCollections.deleteItem(itemIndex);
+    });
+}
+
+function addNewLabelSet() {
+    app.dialog.prompt('Add New Label Set', function (setName) {
+        var newLabelSet = { label : setName };
+        virtualListLabelSets.appendItem(newLabelSet);
+        labelSets[setName] = [];
+        labelSetKeys = Object.keys(labelSets);
     });
 }
 
@@ -125,6 +123,8 @@ var labelSets = {
     Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
     Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
 };
+
+var labelSetKeys = Object.keys(labelSets);
 
 var selectedCollection;
 var selectedLabel = [];
@@ -163,7 +163,12 @@ function setHomepageDataPickers() {
             values: Object.keys(labelSets),
             onChange: function(picker, labelSet) {
                 if (picker.cols[1].replaceValues) {
-                    picker.cols[1].replaceValues(labelSets[labelSet]);
+                    if (labelSets[labelSet].length > 0) {
+                        picker.cols[1].replaceValues(labelSets[labelSet]);
+                    } else {
+                        picker.cols[1].replaceValues(['-- No Items --']);
+                    }
+
                 }
             }
         }, {
@@ -204,5 +209,34 @@ function createVListCollections() {
                     '</li>';
         },
     });
+}
 
+var virtualListLabelSets;
+
+function createVListLabelSets() {
+    // https://stackoverflow.com/questions/14810506/map-function-for-objects-instead-of-arrays
+    var labelSetKeyMap = labelSetKeys.reduce(function(accumulator, currentValue) {
+                            accumulator.push({label : currentValue});
+                            return accumulator;
+                        }, []);
+
+    console.log(labelSetKeyMap);
+
+    virtualListLabelSets = app.virtualList.create({
+        // List Element
+        el: '.virtual-list.labelSetsList',
+        // Pass array with items
+        items: labelSetKeyMap,
+        itemTemplate: '<li>{{label}}</li>',
+        // renderItem: function (item, index) {
+        //     return '<li class="swipeout">' +
+        //                 '<div class="swipeout-content item-content">' +
+        //                     '<div class="item-inner">' + item.title + '</div>' +
+        //                 '</div>' +
+        //                 '<div class="swipeout-actions-right">' +
+        //                     '<a href="#" class="color-red" onclick="deleteCollection(' + index + ')">Delete</a>' +
+        //                 '</div>' +
+        //             '</li>';
+        // },
+    });
 }
