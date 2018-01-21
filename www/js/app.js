@@ -93,6 +93,13 @@ function addNewCollection() {
     });
 }
 
+function editCollection(itemIndex) {
+    app.dialog.prompt('Add New Data Collection', function (collectionName) {
+        var newCollection = { title : collectionName };
+        virtualListCollections.replaceItem(itemIndex, newCollection);
+    });
+}
+
 function deleteCollection(itemIndex) {
     app.dialog.confirm('Are you sure you want to delete?', function () {
         virtualListCollections.deleteItem(itemIndex);
@@ -220,11 +227,12 @@ function createVListCollections() {
         // List item Template7 template
         // itemTemplate: '<li>{{title}}</li>',
         renderItem: function (item, index) {
-            return '<li class="swipeout">' +
+            return  '<li class="swipeout">' +
                         '<div class="swipeout-content item-content">' +
                             '<div class="item-inner">' + item.title + '</div>' +
                         '</div>' +
                         '<div class="swipeout-actions-right">' +
+                            '<a href="#" class="color-orange" onclick="editCollection(' + index + ')">Edit</a>' +
                             '<a href="#" class="color-red" onclick="deleteCollection(' + index + ')">Delete</a>' +
                         '</div>' +
                     '</li>';
@@ -241,7 +249,7 @@ function createVListLabelSets() {
                             return accumulator;
                         }, []);
 
-    console.log(labelSetKeyMap);
+    // console.log(labelSetKeyMap);
 
     virtualListLabelSets = app.virtualList.create({
         // List Element
