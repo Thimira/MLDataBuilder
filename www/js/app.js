@@ -108,6 +108,27 @@ function addNewLabelSet() {
     });
 }
 
+function editLabelSet(itemIndex) {
+    app.dialog.prompt('Edit Label Set', function (setName) {
+        var oldName = labelSetKeys[itemIndex];
+        labelSets[setName] = labelSets[oldName];
+        delete labelSets[oldName];
+        labelSetKeys = Object.keys(labelSets);
+
+        var newLabelSet = { label : setName };
+        virtualListLabelSets.replaceItem(itemIndex, newLabelSet);
+    });
+}
+
+function deleteLabelSet(itemIndex) {
+    app.dialog.confirm('Are you sure you want to delete?', function () {
+        virtualListLabelSets.deleteItem(itemIndex);
+        var setName = labelSetKeys[itemIndex];
+        delete labelSets[setName];
+        labelSetKeys = Object.keys(labelSets);
+    });
+}
+
 /**
  * Sets the 'No Image' icon to the image placeholder
  */
@@ -227,16 +248,28 @@ function createVListLabelSets() {
         el: '.virtual-list.labelSetsList',
         // Pass array with items
         items: labelSetKeyMap,
-        itemTemplate: '<li>{{label}}</li>',
-        // renderItem: function (item, index) {
-        //     return '<li class="swipeout">' +
-        //                 '<div class="swipeout-content item-content">' +
-        //                     '<div class="item-inner">' + item.title + '</div>' +
-        //                 '</div>' +
-        //                 '<div class="swipeout-actions-right">' +
-        //                     '<a href="#" class="color-red" onclick="deleteCollection(' + index + ')">Delete</a>' +
-        //                 '</div>' +
-        //             '</li>';
-        // },
+        // Item Render Template
+        renderItem: function (item, index) {
+            var itemCount = 0;
+            if (labelSets[item.label]) {
+                itemCount = labelSets[item.label].length;
+            }
+            return  '<li class="swipeout">' +
+                        '<div class="swipeout-content">' +
+                            '<a href="#" class="item-link item-content">' +
+                                '<div class="item-inner">' +
+                                    '<div class="item-title-row">' +
+                                        '<div class="item-title">' + item.label + '</div>' +
+                                        '<div class="item-after"><span class="badge color-green">' + itemCount + '</span></div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</a>' +
+                        '</div>' +
+                        '<div class="swipeout-actions-right">' +
+                            '<a href="#" class="color-orange" onclick="editLabelSet(' + index + ')">Edit</a>' +
+                            '<a href="#" class="color-red" onclick="deleteLabelSet(' + index + ')">Delete</a>' +
+                        '</div>' +
+                    '</li>';
+        },
     });
 }
