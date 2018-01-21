@@ -63,6 +63,16 @@ $$(document).on('page:afterin', function (e) {
     var page = app.views.main.router.url;
     // console.log(page);
 
+    if (page == '/') {
+        if (pickerCollection) {
+            pickerCollection.destroy();
+        }
+        if (pickerLabel) {
+            pickerLabel.destroy();
+        }
+        setHomepageDataPickers();
+    }
+
     if (page == '/collections/') {
         // console.log('Collections Loaded');
         createVListCollections();
@@ -119,8 +129,11 @@ var labelSets = {
 var selectedCollection;
 var selectedLabel = [];
 
+var pickerCollection;
+var pickerLabel;
+
 function setHomepageDataPickers() {
-    var pickerCollection = app.picker.create({
+    pickerCollection = app.picker.create({
         inputEl: '#picker-collection',
         rotateEffect: true,
         cols: [{
@@ -139,7 +152,7 @@ function setHomepageDataPickers() {
         },
     });
 
-    var pickerLabel = app.picker.create({
+    pickerLabel = app.picker.create({
         inputEl: '#picker-label',
         rotateEffect: true,
         formatValue: function(values) {
