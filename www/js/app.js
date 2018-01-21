@@ -94,7 +94,7 @@ function addNewCollection() {
 }
 
 function editCollection(itemIndex) {
-    app.dialog.prompt('Add New Data Collection', function (collectionName) {
+    app.dialog.prompt('Edit Data Collection', function (collectionName) {
         var newCollection = { title : collectionName };
         virtualListCollections.replaceItem(itemIndex, newCollection);
     });
