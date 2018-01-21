@@ -25,9 +25,9 @@
                         <li>
                             <div class="item-content item-input">
                                 <div class="item-inner">
-                                    <div class="item-title item-label">Name</div>
+                                    <div class="item-title item-label">Backend Endpoint</div>
                                     <div class="item-input-wrap">
-                                        <input type="text" name="name" placeholder="Your name">
+                                        <input type="text" name="backend_endpoint" placeholder="Your backend URL">
                                     </div>
                                 </div>
                             </div>
@@ -35,15 +35,30 @@
                         <li>
                             <div class="item-content item-input">
                                 <div class="item-inner">
-                                    <div class="item-title item-label">E-mail</div>
+                                    <div class="item-title item-label">Username</div>
                                     <div class="item-input-wrap">
-                                        <input type="email" name="email" placeholder="E-mail">
+                                        <!-- <input type="email" name="username" placeholder="E-mail"> -->
+                                        <input type="text" name="username" placeholder="Username for Backend">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Access Token</div>
+                                    <div class="item-input-wrap">
+                                        <input type="password" name="access_token" placeholder="Access Token for the Backend">
                                     </div>
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </form>
+                <div class="block block-strong row">
+                    <div class="col"><a class="button button-outline convert-form-to-data" href="#">Defaults</a></div>
+                    <div class="col"><a class="button button-fill fill-form-from-data" href="#">Save</a></div>
+                </div>
             </div>
         </div>
     </div>
