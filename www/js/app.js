@@ -85,6 +85,10 @@ $$(document).on('page:afterin', function (e) {
     }
 });
 
+app.on('tabShow', function(tabEl) {
+    console.log($$(tabEl).hasClass('labelDetails'));
+});
+
 
 function addNewCollection() {
     app.dialog.prompt('Add New Data Collection', function (collectionName) {
@@ -104,6 +108,10 @@ function deleteCollection(itemIndex) {
     app.dialog.confirm('Are you sure you want to delete?', function () {
         virtualListCollections.deleteItem(itemIndex);
     });
+}
+
+function addLabels() {
+    addNewLabelSet();
 }
 
 function addNewLabelSet() {
@@ -134,6 +142,14 @@ function deleteLabelSet(itemIndex) {
         delete labelSets[setName];
         labelSetKeys = Object.keys(labelSets);
     });
+}
+
+var currentViewLabel;
+
+function loadLabelDetails(itemIndex) {
+    currentViewLabel = labelSetKeys[itemIndex];
+    createVListLabelDetails(currentViewLabel);
+    app.tab.show("#tab2");
 }
 
 /**
@@ -266,10 +282,46 @@ function createVListLabelSets() {
                         '<div class="swipeout-content">' +
                             '<a href="#" class="item-link item-content">' +
                                 '<div class="item-inner">' +
-                                    '<div class="item-title-row">' +
-                                        '<div class="item-title">' + item.label + '</div>' +
-                                        '<div class="item-after"><span class="badge color-green">' + itemCount + '</span></div>' +
-                                    '</div>' +
+                                    '<div class="item-title">' + item.label + '</div>' +
+                                    '<div class="item-after"><span class="badge color-green">' + itemCount + '</span></div>' +
+                                '</div>' +
+                            '</a>' +
+                        '</div>' +
+                        '<div class="swipeout-actions-left">' +
+                            '<a href="#" class="color-orange" onclick="loadLabelDetails(' + index + ')">Items</a>' +
+                        '</div>' +
+                        '<div class="swipeout-actions-right">' +
+                            '<a href="#" class="color-orange" onclick="editLabelSet(' + index + ')">Edit</a>' +
+                            '<a href="#" class="color-red" onclick="deleteLabelSet(' + index + ')">Delete</a>' +
+                        '</div>' +
+                    '</li>';
+        },
+    });
+}
+
+var virtualListLabelDetails;
+
+function createVListLabelDetails(labelSet) {
+    // https://stackoverflow.com/questions/14810506/map-function-for-objects-instead-of-arrays
+    var labelDetailsMap = labelSets[labelSet].reduce(function(accumulator, currentValue) {
+                            accumulator.push({label : currentValue});
+                            return accumulator;
+                        }, []);
+
+    // console.log(labelSetKeyMap);
+
+    virtualListLabelDetails = app.virtualList.create({
+        // List Element
+        el: '.virtual-list.labelDetailList',
+        // Pass array with items
+        items: labelDetailsMap,
+        // Item Render Template
+        renderItem: function (item, index) {
+            return  '<li class="swipeout">' +
+                        '<div class="swipeout-content">' +
+                            '<a href="#" class="item-link item-content">' +
+                                '<div class="item-inner">' +
+                                    '<div class="item-title">' + item.label + '</div>' +
                                 '</div>' +
                             '</a>' +
                         '</div>' +

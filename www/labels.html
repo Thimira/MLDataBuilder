@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <div class="fab fab-right-bottom" onclick="addNewLabelSet();">
+        <div class="fab fab-right-bottom" onclick="addLabels();">
             <a href="#">
                 <i class="material-icons md-36">add</i>
             </a>
@@ -29,14 +29,22 @@
             <div class="page-content tab tab-active" id="tab1">
                 <div class="block">
                     <p class="list-group-title">Swipe for Actions</p>
-                    <div class="list virtual-list media-list labelSetsList"></div>
+                    <div class="list virtual-list labelSetsList"></div>
                 </div>
             </div>
 
-            <div class="page-content tab" id="tab2">
+            <div class="page-content tab labelDetails" id="tab2">
+                <div class="toolbar tabbar color-orange">
+                    <div class="toolbar-inner">
+                        <a href="#tab1" class="tab-link tab-link-active">
+                            &lt; Label Sets
+                        </a>
+                        <a href="#" class="tab-link">&nbsp;</a>
+                    </div>
+                </div>
                 <div class="block">
                     <p class="list-group-title">Swipe to Delete an Item</p>
-                    <div class="list virtual-list media-list labelDetailList"></div>
+                    <div class="list virtual-list labelDetailList"></div>
                 </div>
             </div>
         </div>
