@@ -10,13 +10,20 @@ function uploadPhoto() {
 
         toastWithButton.open();
     } else {
-        var postUrl = "http://10.98.204.74:3005/upload/";
+        var postUrl = appSettings.backend_endpoint;
 
         var fileUploadOptions = new FileUploadOptions();
         fileUploadOptions.fileKey = "image";
         fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
         fileUploadOptions.mimeType = "image/png";
         fileUploadOptions.chunkedMode = true;
+
+        var params = {};
+        params.collection = selectedCollection;
+        params.labelSet = selectedLabel.labelSet;
+        params.label = selectedLabel.label;
+
+        fileUploadOptions.params = params;
 
         var fileTransfer = new FileTransfer();
 
