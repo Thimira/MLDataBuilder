@@ -246,7 +246,10 @@ function setInitialImage() {
 // var labelSetKeys = Object.keys(labelSets);
 
 var selectedCollection;
-var selectedLabel = [];
+var selectedLabel = {
+    labelSet : "",
+    label: ""
+};
 
 var pickerCollection;
 var pickerLabel;
@@ -281,6 +284,8 @@ function setHomepageDataPickers() {
             textAlign: 'left',
             values: Object.keys(labelSets),
             onChange: function(picker, labelSet) {
+                selectedLabel.labelSet = labelSet;
+                selectedLabel.label = labelSets[labelSet][0];
                 if (picker.cols[1].replaceValues) {
                     if (labelSets[labelSet].length > 0) {
                         picker.cols[1].replaceValues(labelSets[labelSet]);
@@ -292,8 +297,19 @@ function setHomepageDataPickers() {
             }
         }, {
             values: labelSets.Flowers,
-            // width: 160,
-        }, ]
+            width: 160,
+            onChange: function(picker, label) {
+                selectedLabel.label = label;
+            }
+        }, ],
+        on: {
+            init: function(picker) {
+                console.log(selectedLabel);
+                if (selectedLabel.labelSet) {
+                    picker.setValue([selectedLabel.labelSet, selectedLabel.label]);
+                }
+            }
+        }
     });
 }
 
