@@ -81,12 +81,22 @@ $$(document).on('page:afterin', function (e) {
 
     if (page == '/labels/') {
         // console.log('Labels Loaded');
+        if (virtualListLabelSets) {
+            virtualListLabelSets.destroy();
+        }
         createVListLabelSets();
     }
 });
 
 app.on('tabShow', function(tabEl) {
-    console.log($$(tabEl).hasClass('labelDetails'));
+    if ($$(tabEl).hasClass('labelSets')) {
+        if (virtualListLabelSets) {
+            virtualListLabelSets.destroy();
+        }
+        createVListLabelSets();
+
+        currentViewLabel = 'index';
+    }
 });
 
 
@@ -111,7 +121,11 @@ function deleteCollection(itemIndex) {
 }
 
 function addLabels() {
-    addNewLabelSet();
+    if (currentViewLabel === 'index') {
+        addNewLabelSet();
+    } else {
+        addNewLabeltoLabelSet();
+    }
 }
 
 function addNewLabelSet() {
@@ -124,7 +138,8 @@ function addNewLabelSet() {
 }
 
 function editLabelSet(itemIndex) {
-    app.dialog.prompt('Edit Label Set', function (setName) {
+    var currentName = labelSetKeys[itemIndex];
+    app.dialog.prompt('Edit Label Set \'' + currentName + '\'', function (setName) {
         var oldName = labelSetKeys[itemIndex];
         labelSets[setName] = labelSets[oldName];
         delete labelSets[oldName];
@@ -136,7 +151,8 @@ function editLabelSet(itemIndex) {
 }
 
 function deleteLabelSet(itemIndex) {
-    app.dialog.confirm('Are you sure you want to delete?', function () {
+    var setName = labelSetKeys[itemIndex];
+    app.dialog.confirm('Are you sure you want to delete \'' + setName + '\'?', function () {
         virtualListLabelSets.deleteItem(itemIndex);
         var setName = labelSetKeys[itemIndex];
         delete labelSets[setName];
@@ -144,12 +160,38 @@ function deleteLabelSet(itemIndex) {
     });
 }
 
-var currentViewLabel;
+var currentViewLabel = 'index';
 
 function loadLabelDetails(itemIndex) {
     currentViewLabel = labelSetKeys[itemIndex];
     createVListLabelDetails(currentViewLabel);
     app.tab.show("#tab2");
+}
+
+function addNewLabeltoLabelSet() {
+    app.dialog.prompt('Add New Label to ' + currentViewLabel + ' Set', function (labelName) {
+        var newLabel = { label : labelName };
+        virtualListLabelDetails.appendItem(newLabel);
+        labelSets[currentViewLabel].push(labelName);
+    });
+}
+
+function editLabel(itemIndex) {
+    var editingLabel = labelSets[currentViewLabel][itemIndex];
+    app.dialog.prompt('Edit Label \'' + editingLabel + '\'', function (labelName) {
+        labelSets[currentViewLabel][itemIndex] = labelName;
+
+        var newLabelName = { label : labelName };
+        virtualListLabelDetails.replaceItem(itemIndex, newLabelName);
+    });
+}
+
+function deleteLabel(itemIndex) {
+    var editingLabel = labelSets[currentViewLabel][itemIndex];
+    app.dialog.confirm('Are you sure you want to delete \'' + editingLabel + '\'?', function () {
+        virtualListLabelDetails.deleteItem(itemIndex);
+        labelSets[currentViewLabel].splice(itemIndex, 1);
+    });
 }
 
 /**
@@ -326,8 +368,8 @@ function createVListLabelDetails(labelSet) {
                             '</a>' +
                         '</div>' +
                         '<div class="swipeout-actions-right">' +
-                            '<a href="#" class="color-orange" onclick="editLabelSet(' + index + ')">Edit</a>' +
-                            '<a href="#" class="color-red" onclick="deleteLabelSet(' + index + ')">Delete</a>' +
+                            '<a href="#" class="color-orange" onclick="editLabel(' + index + ')">Edit</a>' +
+                            '<a href="#" class="color-red" onclick="deleteLabel(' + index + ')">Delete</a>' +
                         '</div>' +
                     '</li>';
         },
