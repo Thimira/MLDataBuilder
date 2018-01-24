@@ -43,6 +43,8 @@ var mainView = app.views.create('.view-main');
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
 
+var appStorage;
+
 // Handle Cordova Device Ready Event
 $$(document).on('deviceReady', function() {
     console.log("Device is ready!");
@@ -50,13 +52,24 @@ $$(document).on('deviceReady', function() {
     pictureSource = navigator.camera.PictureSourceType;
     destinationType = navigator.camera.DestinationType;
 
+    appStorage = window.localStorage;
+
+    loadApplicationData();
+    // localStorage.clear();
+    // appStorage.clear();
+
     setInitialImage();
 });
 
 $$(document).on('page:init', '.page[data-name="home"]', function (e) {
     // console.log('Home Loaded');
     setInitialImage();
-    setHomepageDataPickers();
+
+    // HACK! Find a better solution!
+    setTimeout(function(){
+        setHomepageDataPickers();
+    }, 100);
+
 });
 
 $$(document).on('page:afterin', function (e) {
@@ -86,6 +99,10 @@ $$(document).on('page:afterin', function (e) {
         }
         createVListLabelSets();
     }
+
+    if (page == '/settings/') {
+        loadSettings();
+    }
 });
 
 app.on('tabShow', function(tabEl) {
@@ -104,6 +121,8 @@ function addNewCollection() {
     app.dialog.prompt('Add New Data Collection', function (collectionName) {
         var newCollection = { title : collectionName };
         virtualListCollections.appendItem(newCollection);
+
+        saveApplicationDataItem('collectionSet');
     });
 }
 
@@ -111,12 +130,16 @@ function editCollection(itemIndex) {
     app.dialog.prompt('Edit Data Collection', function (collectionName) {
         var newCollection = { title : collectionName };
         virtualListCollections.replaceItem(itemIndex, newCollection);
+
+        saveApplicationDataItem('collectionSet');
     });
 }
 
 function deleteCollection(itemIndex) {
     app.dialog.confirm('Are you sure you want to delete?', function () {
         virtualListCollections.deleteItem(itemIndex);
+
+        saveApplicationDataItem('collectionSet');
     });
 }
 
@@ -134,6 +157,8 @@ function addNewLabelSet() {
         virtualListLabelSets.appendItem(newLabelSet);
         labelSets[setName] = [];
         labelSetKeys = Object.keys(labelSets);
+
+        saveApplicationDataItem('labelSets');
     });
 }
 
@@ -147,6 +172,8 @@ function editLabelSet(itemIndex) {
 
         var newLabelSet = { label : setName };
         virtualListLabelSets.replaceItem(itemIndex, newLabelSet);
+
+        saveApplicationDataItem('labelSets');
     });
 }
 
@@ -157,6 +184,8 @@ function deleteLabelSet(itemIndex) {
         var setName = labelSetKeys[itemIndex];
         delete labelSets[setName];
         labelSetKeys = Object.keys(labelSets);
+
+        saveApplicationDataItem('labelSets');
     });
 }
 
@@ -173,6 +202,8 @@ function addNewLabeltoLabelSet() {
         var newLabel = { label : labelName };
         virtualListLabelDetails.appendItem(newLabel);
         labelSets[currentViewLabel].push(labelName);
+
+        saveApplicationDataItem('labelSets');
     });
 }
 
@@ -183,6 +214,8 @@ function editLabel(itemIndex) {
 
         var newLabelName = { label : labelName };
         virtualListLabelDetails.replaceItem(itemIndex, newLabelName);
+
+        saveApplicationDataItem('labelSets');
     });
 }
 
@@ -191,6 +224,8 @@ function deleteLabel(itemIndex) {
     app.dialog.confirm('Are you sure you want to delete \'' + editingLabel + '\'?', function () {
         virtualListLabelDetails.deleteItem(itemIndex);
         labelSets[currentViewLabel].splice(itemIndex, 1);
+
+        saveApplicationDataItem('labelSets');
     });
 }
 
@@ -201,16 +236,14 @@ function setInitialImage() {
     placeImage("img/no-image.jpg");
 }
 
-// var collectionSet = ['Supercars Dataset', 'Garden Flowers', 'Faces'];
+// var collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Garden Flowers'}, { title: 'Faces'}];
 
-var collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Garden Flowers'}, { title: 'Faces'}];
+// var labelSets = {
+//     Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
+//     Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
+// };
 
-var labelSets = {
-    Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
-    Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
-};
-
-var labelSetKeys = Object.keys(labelSets);
+// var labelSetKeys = Object.keys(labelSets);
 
 var selectedCollection;
 var selectedLabel = [];
@@ -374,4 +407,76 @@ function createVListLabelDetails(labelSet) {
                     '</li>';
         },
     });
+}
+
+// ********** Application Data **********
+
+var appSettings;
+var collectionSet;
+var labelSets;
+var labelSetKeys;
+
+// **************************************
+
+function loadApplicationData() {
+    appSettings = appStorage.getItem('settings');
+
+    if (appSettings === null) {
+        console.log("Loading defaults for appSettings");
+        appSettings = {
+            backend_endpoint : "",
+            username : "",
+            access_token : ""
+        };
+
+        appStorage.setItem('settings', JSON.stringify(appSettings));
+    } else {
+        appSettings = JSON.parse(appSettings);
+    }
+
+    console.log(appSettings);
+
+    collectionSet = appStorage.getItem('collectionSet');
+
+    if (collectionSet === null) {
+        console.log("Loading defaults for collectionSet");
+        collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Garden Flowers'}, { title: 'Faces'}];
+
+        appStorage.setItem('collectionSet', JSON.stringify(collectionSet));
+    } else {
+        collectionSet = JSON.parse(collectionSet);
+    }
+
+
+    labelSets = appStorage.getItem('labelSets');
+
+    if (labelSets === null) {
+        console.log("Loading defaults for labelSets");
+        labelSets = {
+            Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
+            Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
+        };
+
+        appStorage.setItem('labelSets', JSON.stringify(labelSets));
+    } else {
+        labelSets = JSON.parse(labelSets);
+    }
+    labelSetKeys = Object.keys(labelSets);
+}
+
+function saveApplicationDataItem(itemKey) {
+    console.log(window[itemKey]);
+    appStorage.setItem(itemKey, JSON.stringify(window[itemKey]));
+}
+
+
+function saveSettings() {
+    var formData = app.form.convertToData('#settings-form');
+    // alert(JSON.stringify(formData));
+    appStorage.setItem('settings', JSON.stringify(formData));
+}
+
+function loadSettings() {
+    console.log(appSettings);
+    app.form.fillFromData('#settings-form', appSettings);
 }
