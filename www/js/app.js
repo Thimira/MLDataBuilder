@@ -409,12 +409,10 @@ function createVListLabelDetails(labelSet) {
         // Item Render Template
         renderItem: function (item, index) {
             return  '<li class="swipeout">' +
-                        '<div class="swipeout-content">' +
-                            '<a href="#" class="item-link item-content">' +
-                                '<div class="item-inner">' +
-                                    '<div class="item-title">' + item.label + '</div>' +
-                                '</div>' +
-                            '</a>' +
+                        '<div class="swipeout-content item-content">' +
+                            '<div class="item-inner">' +
+                                '<div class="item-title">' + item.label + '</div>' +
+                            '</div>' +
                         '</div>' +
                         '<div class="swipeout-actions-right">' +
                             '<a href="#" class="color-orange" onclick="editLabel(' + index + ')">Edit</a>' +
@@ -489,10 +487,12 @@ function saveApplicationDataItem(itemKey) {
 function saveSettings() {
     var formData = app.form.convertToData('#settings-form');
     // alert(JSON.stringify(formData));
+    appSettings = formData;
+
     appStorage.setItem('settings', JSON.stringify(formData));
 }
 
 function loadSettings() {
-    console.log(appSettings);
+    // console.log(appSettings);
     app.form.fillFromData('#settings-form', appSettings);
 }
