@@ -45,6 +45,12 @@ var $$ = Dom7;
 
 var appStorage;
 
+var loadingScreen;
+
+app.on('init', function () {
+    loadingScreen = app.dialog.preloader();
+});
+
 // Handle Cordova Device Ready Event
 $$(document).on('deviceReady', function() {
     console.log("Device is ready!");
@@ -58,18 +64,15 @@ $$(document).on('deviceReady', function() {
     // appStorage.clear();
     loadApplicationData();
 
+    setHomepageDataPickers();
+    loadingScreen.close();
+
     setInitialImage();
 });
 
 $$(document).on('page:init', '.page[data-name="home"]', function (e) {
     // console.log('Home Loaded');
     setInitialImage();
-
-    // HACK! Find a better solution!
-    setTimeout(function(){
-        setHomepageDataPickers();
-    }, 100);
-
 });
 
 $$(document).on('page:afterin', function (e) {
@@ -276,14 +279,6 @@ function setInitialImage() {
     placeImage("img/no-image.jpg");
 }
 
-// var collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Garden Flowers'}, { title: 'Faces'}];
-
-// var labelSets = {
-//     Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
-//     Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
-// };
-
-// var labelSetKeys = Object.keys(labelSets);
 
 var selectedCollection;
 var selectedLabel = {
