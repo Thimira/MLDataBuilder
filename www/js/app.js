@@ -192,13 +192,11 @@ function addNewLabelSet() {
     });
 }
 
-function editLabelSet(itemIndex) {
-    var currentName = labelSetKeys[itemIndex];
+function editLabelSet(itemIndex, currentName) {
     var editLabelSetPrompt = app.dialog.prompt('Edit Label Set \'' + currentName + '\'', function (setName) {
         if (validateName(setName)) {
-            var oldName = labelSetKeys[itemIndex];
-            labelSets[setName] = labelSets[oldName];
-            delete labelSets[oldName];
+            labelSets[setName] = labelSets[currentName];
+            delete labelSets[currentName];
             labelSetKeys = Object.keys(labelSets);
 
             var newLabelSet = { label : setName };
@@ -212,11 +210,9 @@ function editLabelSet(itemIndex) {
     $$(editLabelSetPrompt.$el).find('input[type="text"]').val(currentName);
 }
 
-function deleteLabelSet(itemIndex) {
-    var setName = labelSetKeys[itemIndex];
+function deleteLabelSet(itemIndex, setName) {
     app.dialog.confirm('Are you sure you want to delete \'' + setName + '\'?', function () {
         virtualListLabelSets.deleteItem(itemIndex);
-        var setName = labelSetKeys[itemIndex];
         delete labelSets[setName];
         labelSetKeys = Object.keys(labelSets);
 
@@ -226,8 +222,8 @@ function deleteLabelSet(itemIndex) {
 
 var currentViewLabel = 'index';
 
-function loadLabelDetails(itemIndex) {
-    currentViewLabel = labelSetKeys[itemIndex];
+function loadLabelDetails(itemIndex, selectedSet) {
+    currentViewLabel = labelSetKeys[selectedSet];
     createVListLabelDetails(currentViewLabel);
     app.tab.show("#tab2");
 }
@@ -423,11 +419,11 @@ function createVListLabelSets() {
                             '</a>' +
                         '</div>' +
                         '<div class="swipeout-actions-left">' +
-                            '<a href="#" class="color-orange" onclick="loadLabelDetails(' + index + ')">Items</a>' +
+                            '<a href="#" class="color-orange" onclick="loadLabelDetails(' + index + ', \'' + item.label + '\')">Items</a>' +
                         '</div>' +
                         '<div class="swipeout-actions-right">' +
-                            '<a href="#" class="color-orange" onclick="editLabelSet(' + index + ')">Edit</a>' +
-                            '<a href="#" class="color-red" onclick="deleteLabelSet(' + index + ')">Delete</a>' +
+                            '<a href="#" class="color-orange" onclick="editLabelSet(' + index + ', \'' + item.label + '\')">Edit</a>' +
+                            '<a href="#" class="color-red" onclick="deleteLabelSet(' + index + ', \'' + item.label + '\')">Delete</a>' +
                         '</div>' +
                     '</li>';
         },
