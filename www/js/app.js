@@ -226,8 +226,8 @@ function deleteLabelSet(itemIndex, setName) {
 var currentViewLabel = 'index';
 
 function loadLabelDetails(itemIndex, selectedSet) {
-    currentViewLabel = labelSetKeys[selectedSet];
-    createVListLabelDetails(currentViewLabel);
+    currentViewLabel = selectedSet;
+    createVListLabelDetails(selectedSet);
     app.tab.show("#tab2");
 }
 
