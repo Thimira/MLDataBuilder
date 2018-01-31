@@ -54,9 +54,9 @@ $$(document).on('deviceReady', function() {
 
     appStorage = window.localStorage;
 
-    loadApplicationData();
     // localStorage.clear();
     // appStorage.clear();
+    loadApplicationData();
 
     setInitialImage();
 });
@@ -116,27 +116,53 @@ app.on('tabShow', function(tabEl) {
     }
 });
 
+function validateName(nameString) {
+    nameString = nameString.trim();
+    if (nameString.length > 0) {
+        var validationPattern = /^[\w -]+$/ig;
+        if (validationPattern.test(nameString)) {
+            return true;
+        } else {
+            app.dialog.alert('A name can only contain aplphanumeric characters, spaces, underscores, and dashes');
+        }
+    } else {
+        app.dialog.alert('A name cannot be empty');
+    }
+    return false;
+}
+
 
 function addNewCollection() {
     app.dialog.prompt('Add New Data Collection', function (collectionName) {
-        var newCollection = { title : collectionName };
-        virtualListCollections.appendItem(newCollection);
+        if (validateName(collectionName)) {
+            var newCollection = { title : collectionName };
+            virtualListCollections.appendItem(newCollection);
 
-        saveApplicationDataItem('collectionSet');
+            saveApplicationDataItem('collectionSet');
+        } else {
+            addNewCollection();
+        }
     });
 }
 
 function editCollection(itemIndex) {
-    app.dialog.prompt('Edit Data Collection', function (collectionName) {
-        var newCollection = { title : collectionName };
-        virtualListCollections.replaceItem(itemIndex, newCollection);
+    var editingCollection = collectionSet[itemIndex].title;
+    var editCollectionPrompt = app.dialog.prompt('Edit Data Collection \'' + editingCollection + '\'', function (collectionName) {
+        if (validateName(collectionName)) {
+            var newCollection = { title : collectionName };
+            virtualListCollections.replaceItem(itemIndex, newCollection);
 
-        saveApplicationDataItem('collectionSet');
+            saveApplicationDataItem('collectionSet');
+        } else {
+            editCollection(itemIndex);
+        }
     });
+    $$(editCollectionPrompt.$el).find('input[type="text"]').val(editingCollection);
 }
 
 function deleteCollection(itemIndex) {
-    app.dialog.confirm('Are you sure you want to delete?', function () {
+    var editingCollection = collectionSet[itemIndex].title;
+    app.dialog.confirm('Are you sure you want to delete \'' + editingCollection + '\'?', function () {
         virtualListCollections.deleteItem(itemIndex);
 
         saveApplicationDataItem('collectionSet');
@@ -153,28 +179,37 @@ function addLabels() {
 
 function addNewLabelSet() {
     app.dialog.prompt('Add New Label Set', function (setName) {
-        var newLabelSet = { label : setName };
-        virtualListLabelSets.appendItem(newLabelSet);
-        labelSets[setName] = [];
-        labelSetKeys = Object.keys(labelSets);
+        if (validateName(setName)) {
+            var newLabelSet = { label : setName };
+            virtualListLabelSets.appendItem(newLabelSet);
+            labelSets[setName] = [];
+            labelSetKeys = Object.keys(labelSets);
 
-        saveApplicationDataItem('labelSets');
+            saveApplicationDataItem('labelSets');
+        } else {
+            addNewLabelSet();
+        }
     });
 }
 
 function editLabelSet(itemIndex) {
     var currentName = labelSetKeys[itemIndex];
-    app.dialog.prompt('Edit Label Set \'' + currentName + '\'', function (setName) {
-        var oldName = labelSetKeys[itemIndex];
-        labelSets[setName] = labelSets[oldName];
-        delete labelSets[oldName];
-        labelSetKeys = Object.keys(labelSets);
+    var editLabelSetPrompt = app.dialog.prompt('Edit Label Set \'' + currentName + '\'', function (setName) {
+        if (validateName(setName)) {
+            var oldName = labelSetKeys[itemIndex];
+            labelSets[setName] = labelSets[oldName];
+            delete labelSets[oldName];
+            labelSetKeys = Object.keys(labelSets);
 
-        var newLabelSet = { label : setName };
-        virtualListLabelSets.replaceItem(itemIndex, newLabelSet);
+            var newLabelSet = { label : setName };
+            virtualListLabelSets.replaceItem(itemIndex, newLabelSet);
 
-        saveApplicationDataItem('labelSets');
+            saveApplicationDataItem('labelSets');
+        } else {
+            editLabelSet(itemIndex);
+        }
     });
+    $$(editLabelSetPrompt.$el).find('input[type="text"]').val(currentName);
 }
 
 function deleteLabelSet(itemIndex) {
@@ -199,24 +234,33 @@ function loadLabelDetails(itemIndex) {
 
 function addNewLabeltoLabelSet() {
     app.dialog.prompt('Add New Label to ' + currentViewLabel + ' Set', function (labelName) {
-        var newLabel = { label : labelName };
-        virtualListLabelDetails.appendItem(newLabel);
-        labelSets[currentViewLabel].push(labelName);
+        if (validateName(labelName)) {
+            var newLabel = { label : labelName };
+            virtualListLabelDetails.appendItem(newLabel);
+            labelSets[currentViewLabel].push(labelName);
 
-        saveApplicationDataItem('labelSets');
+            saveApplicationDataItem('labelSets');
+        } else {
+            addNewLabeltoLabelSet();
+        }
     });
 }
 
 function editLabel(itemIndex) {
     var editingLabel = labelSets[currentViewLabel][itemIndex];
-    app.dialog.prompt('Edit Label \'' + editingLabel + '\'', function (labelName) {
-        labelSets[currentViewLabel][itemIndex] = labelName;
+    var editLabelPrompt = app.dialog.prompt('Edit Label \'' + editingLabel + '\'', function (labelName) {
+        if (validateName(labelName)) {
+            labelSets[currentViewLabel][itemIndex] = labelName;
 
-        var newLabelName = { label : labelName };
-        virtualListLabelDetails.replaceItem(itemIndex, newLabelName);
+            var newLabelName = { label : labelName };
+            virtualListLabelDetails.replaceItem(itemIndex, newLabelName);
 
-        saveApplicationDataItem('labelSets');
+            saveApplicationDataItem('labelSets');
+        } else {
+            editLabel(itemIndex);
+        }
     });
+    $$(editLabelPrompt.$el).find('input[type="text"]').val(editingLabel);
 }
 
 function deleteLabel(itemIndex) {
@@ -304,7 +348,7 @@ function setHomepageDataPickers() {
         }, ],
         on: {
             init: function(picker) {
-                console.log(selectedLabel);
+                // console.log(selectedLabel);
                 if (selectedLabel.labelSet) {
                     picker.setValue([selectedLabel.labelSet, selectedLabel.label]);
                 }
@@ -433,7 +477,7 @@ var labelSetKeys;
 // **************************************
 
 function loadApplicationData() {
-    appSettings = appStorage.getItem('settings');
+    appSettings = appStorage.getItem('appSettings');
 
     if (appSettings === null) {
         console.log("Loading defaults for appSettings");
@@ -443,12 +487,12 @@ function loadApplicationData() {
             access_token : ""
         };
 
-        appStorage.setItem('settings', JSON.stringify(appSettings));
+        appStorage.setItem('appSettings', JSON.stringify(appSettings));
     } else {
         appSettings = JSON.parse(appSettings);
     }
 
-    console.log(appSettings);
+    // console.log(appSettings);
 
     collectionSet = appStorage.getItem('collectionSet');
 
@@ -479,7 +523,7 @@ function loadApplicationData() {
 }
 
 function saveApplicationDataItem(itemKey) {
-    console.log(window[itemKey]);
+    // console.log(window[itemKey]);
     appStorage.setItem(itemKey, JSON.stringify(window[itemKey]));
 }
 
@@ -489,7 +533,7 @@ function saveSettings() {
     // alert(JSON.stringify(formData));
     appSettings = formData;
 
-    appStorage.setItem('settings', JSON.stringify(formData));
+    saveApplicationDataItem('appSettings');
 }
 
 function loadSettings() {
