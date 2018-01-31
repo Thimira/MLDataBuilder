@@ -84,5 +84,5 @@ function getPhoto(source) {
  * @param message : the message to display
  */
 function onFail(message) {
-    alert('Image retrieval failed: ' + message);
+    app.dialog.alert('Image retrieval failed: ' + message);
 }
