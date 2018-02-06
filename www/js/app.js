@@ -48,7 +48,7 @@ var appStorage;
 var loadingScreen;
 
 app.on('init', function () {
-    loadingScreen = app.dialog.preloader();
+    // loadingScreen = app.dialog.preloader();
 });
 
 // Handle Cordova Device Ready Event
@@ -65,7 +65,8 @@ $$(document).on('deviceReady', function() {
     loadApplicationData();
 
     setHomepageDataPickers();
-    loadingScreen.close();
+    // loadingScreen.close();
+    // loadingScreen.destroy();
 
     setInitialImage();
 });
@@ -183,10 +184,11 @@ function addLabels() {
 function addNewLabelSet() {
     app.dialog.prompt('Add New Label Set', function (setName) {
         if (validateName(setName)) {
-            var newLabelSet = { label : setName };
-            virtualListLabelSets.appendItem(newLabelSet);
             labelSets[setName] = [];
             labelSetKeys = Object.keys(labelSets);
+
+            var newLabelSet = { label : setName };
+            virtualListLabelSets.appendItem(newLabelSet);
 
             saveApplicationDataItem('labelSets');
         } else {
@@ -331,7 +333,7 @@ function setHomepageDataPickers() {
                 }
             }
         }, {
-            values: labelSets.Flowers,
+            values: labelSets[Object.keys(labelSets)[0]],
             width: 160,
             onChange: function(picker, label) {
                 selectedLabel.label = label;
@@ -473,7 +475,7 @@ function loadApplicationData() {
     if (appSettings === null) {
         console.log("Loading defaults for appSettings");
         appSettings = {
-            backend_endpoint : "",
+            backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com/upload/",
             username : "",
             access_token : ""
         };
