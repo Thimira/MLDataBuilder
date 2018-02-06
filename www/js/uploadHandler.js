@@ -11,35 +11,41 @@ function uploadPhoto() {
             var postUrl = appSettings.backend_endpoint;
 
             if (postUrl) {
-                var fileUploadOptions = new FileUploadOptions();
-                fileUploadOptions.fileKey = "image";
-                fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-                fileUploadOptions.mimeType = "image/png";
-                fileUploadOptions.chunkedMode = true;
+                if (appSettings.username) {
+                    var fileUploadOptions = new FileUploadOptions();
+                    fileUploadOptions.fileKey = "image";
+                    fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+                    fileUploadOptions.mimeType = "image/png";
+                    fileUploadOptions.chunkedMode = true;
 
-                var params = {};
-                params.collection = selectedCollection;
-                params.labelSet = selectedLabel.labelSet;
-                params.label = selectedLabel.label;
+                    var params = {};
+                    params.collection = selectedCollection;
+                    params.labelSet = selectedLabel.labelSet;
+                    params.label = selectedLabel.label;
+                    params.username = appSettings.username;
+                    params.access_token = appSettings.access_token;
 
-                fileUploadOptions.params = params;
+                    fileUploadOptions.params = params;
 
-                var fileTransfer = new FileTransfer();
+                    var fileTransfer = new FileTransfer();
 
-                uploadProgress = app.dialog.progress('Please Wait...');
+                    uploadProgress = app.dialog.progress('Please Wait...');
 
-                fileTransfer.onprogress = function(progressEvent) {
-                    if (progressEvent.lengthComputable) {
-                        var percentage = Math.floor(progressEvent.loaded / progressEvent.total) * 100;
-                        uploadProgress.setProgress(percentage);
+                    fileTransfer.onprogress = function(progressEvent) {
+                        if (progressEvent.lengthComputable) {
+                            var percentage = Math.floor(progressEvent.loaded / progressEvent.total) * 100;
+                            uploadProgress.setProgress(percentage);
 
-                        if (progressEvent.loaded === progressEvent.total) {
-                            uploadProgress.close();
+                            if (progressEvent.loaded === progressEvent.total) {
+                                uploadProgress.close();
+                            }
                         }
-                    }
-                };
+                    };
 
-                fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
+                    fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
+                } else {
+                    displayToastMessage('Upload username not set. Please set it in the application settings');
+                }
             } else {
                 displayToastMessage('Backend URL not set. Please set it in the application settings');
             }
