@@ -44,6 +44,7 @@ var mainView = app.views.create('.view-main');
 var $$ = Dom7;
 
 var appStorage;
+var deviceUniqueID;
 
 var loadingScreen;
 
@@ -59,6 +60,12 @@ $$(document).on('deviceReady', function() {
     destinationType = navigator.camera.DestinationType;
 
     appStorage = window.localStorage;
+
+    deviceUniqueID = device.uuid;
+
+    if (deviceUniqueID === null) {
+        deviceUniqueID = Math.floor((Math.random() * 100000000) + 1);
+    }
 
     // localStorage.clear();
     // appStorage.clear();
@@ -476,7 +483,7 @@ function loadApplicationData() {
         console.log("Loading defaults for appSettings");
         appSettings = {
             backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com/upload/",
-            username : "",
+            username : "user_" + deviceUniqueID,
             access_token : ""
         };
 
@@ -532,4 +539,16 @@ function saveSettings() {
 function loadSettings() {
     // console.log(appSettings);
     app.form.fillFromData('#settings-form', appSettings);
+}
+
+function loadDefaultSettings() {
+    // console.log(appSettings);
+
+    var defaultSettings = {
+        backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com/upload/",
+        username : "user_" + deviceUniqueID,
+        access_token : ""
+    };
+
+    app.form.fillFromData('#settings-form', defaultSettings);
 }
