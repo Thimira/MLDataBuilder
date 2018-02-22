@@ -2,7 +2,7 @@
 
 
 <!-- <div class="pages"> -->
-    <div data-page="settings" class="page">
+    <div data-page="account" class="page">
         <!-- Top Navbar-->
         <div class="navbar">
             <div class="navbar-inner">
@@ -12,22 +12,22 @@
                         <span>Back</span>
                     </a>
                 </div>
-                <div class="title">Settings</div>
+                <div class="title">Account</div>
                 <div class="left panel-open">
                     <a href="#" class="link icon-only"><i class="material-icons">menu</i></a>
                 </div>
             </div>
         </div>
         <div class="page-content">
-            <div class="block">
-                <form class="list" id="settings-form">
+            <div class="block" id="login-form-block">
+                <form class="list" id="login-form">
                     <ul>
                         <li>
                             <div class="item-content item-input">
                                 <div class="item-inner">
-                                    <div class="item-title item-label">Backend Endpoint</div>
+                                    <div class="item-title item-label">Username</div>
                                     <div class="item-input-wrap">
-                                        <input type="text" name="backend_endpoint" placeholder="Your backend URL">
+                                        <input type="email" name="login_username" placeholder="Your Username/Email">
                                     </div>
                                 </div>
                             </div>
@@ -35,9 +35,9 @@
                         <li>
                             <div class="item-content item-input">
                                 <div class="item-inner">
-                                    <div class="item-title item-label">Upload Path</div>
+                                    <div class="item-title item-label">Password</div>
                                     <div class="item-input-wrap">
-                                        <input type="text" name="upload_path" placeholder="Path to Upload in Backend">
+                                        <input type="password" name="login_password" placeholder="Your Password">
                                     </div>
                                 </div>
                             </div>
@@ -45,13 +45,26 @@
                     </ul>
                 </form>
                 <div class="block block-strong row">
-                    <div class="col"><a class="button button-outline" onclick="loadDefaultSettings()" href="#">Defaults</a></div>
-                    <div class="col"><a class="button button-fill" onclick="saveSettings()" href="#">Save</a></div>
+                    <div class="col"><a class="button button-fill" onclick="login()" href="#">Login</a></div>
                 </div>
+            </div>
+            <div class="block" id="logout-form-block">
+                <form class="list" id="logout-form">
+                    <ul>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Logged in as</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" id="loggedin_username" name="loggedin_username" disabled="disabled">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
                 <div class="block block-strong row">
-                    <div class="col"></div>
-                    <div class="col"><a class="button button-outline" onclick="resetAllAppData()" href="#">Reset App Data</a></div>
-                    <div class="col"></div>
+                    <div class="col"><a class="button button-fill" onclick="logout()" href="#">Logout</a></div>
                 </div>
             </div>
         </div>

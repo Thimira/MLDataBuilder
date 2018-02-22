@@ -6,12 +6,15 @@ var uploadProgress; // Progress dialogbox
 function uploadPhoto() {
     if (imagePath == null) {
         displayToastMessage('No image data found to upload');
+        console.log(loggedinUser);
+        console.log(authToken);
     } else {
         if (selectedCollection && selectedLabel.labelSet && selectedLabel.label) {
-            var postUrl = appSettings.backend_endpoint;
+            var postUrl = appSettings.backend_endpoint + appSettings.upload_path;
+
 
             if (postUrl) {
-                if (appSettings.username) {
+                if (loggedinUser && authToken) {
                     var fileUploadOptions = new FileUploadOptions();
                     fileUploadOptions.fileKey = "image";
                     fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
@@ -22,8 +25,8 @@ function uploadPhoto() {
                     params.collection = selectedCollection;
                     params.labelSet = selectedLabel.labelSet;
                     params.label = selectedLabel.label;
-                    params.username = appSettings.username;
-                    params.access_token = appSettings.access_token;
+                    params.username = loggedinUser;
+                    params.access_token = authToken;
 
                     fileUploadOptions.params = params;
 
@@ -44,7 +47,7 @@ function uploadPhoto() {
 
                     fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
                 } else {
-                    displayToastMessage('Upload username not set. Please set it in the application settings');
+                    displayToastMessage('You haven\'t logged in. Please login');
                 }
             } else {
                 displayToastMessage('Backend URL not set. Please set it in the application settings');

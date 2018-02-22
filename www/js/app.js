@@ -32,6 +32,9 @@ var app = new Framework7({
     }, {
         path: '/settings/',
         url: 'settings.html',
+    }, {
+        path: '/account/',
+        url: 'account.html',
     }, ],
     view: {
         pushState: true, // device back button will bring you to the main page
@@ -45,6 +48,7 @@ var $$ = Dom7;
 
 var appStorage;
 var deviceUniqueID;
+var deviceUniqueIDBackup;
 
 var loadingScreen;
 
@@ -63,13 +67,23 @@ $$(document).on('deviceReady', function() {
 
     deviceUniqueID = device.uuid;
 
-    if (deviceUniqueID === null) {
-        deviceUniqueID = Math.floor((Math.random() * 100000000) + 1);
-    }
-
     // localStorage.clear();
     // appStorage.clear();
     loadApplicationData();
+
+    if (deviceUniqueID === null) {
+        deviceUniqueIDBackup = appStorage.getItem('deviceUniqueIDBackup');
+        if (deviceUniqueIDBackup) {
+            deviceUniqueID = deviceUniqueIDBackup;
+        } else {
+            deviceUniqueID = Math.floor((Math.random() * 100000000) + 1);
+            deviceUniqueIDBackup = deviceUniqueID;
+            saveApplicationDataItem("deviceUniqueIDBackup");
+            console.log('New device ID generated');
+        }
+    }
+
+    console.log('Device ID : ' + deviceUniqueID);
 
     setHomepageDataPickers();
     // loadingScreen.close();
@@ -113,6 +127,10 @@ $$(document).on('page:afterin', function (e) {
 
     if (page == '/settings/') {
         loadSettings();
+    }
+
+    if (page == '/account/') {
+        setAccountStatus();
     }
 });
 
@@ -473,6 +491,8 @@ var appSettings;
 var collectionSet;
 var labelSets;
 var labelSetKeys;
+var loggedinUser;
+var authToken;
 
 // **************************************
 
@@ -482,9 +502,9 @@ function loadApplicationData() {
     if (appSettings === null) {
         console.log("Loading defaults for appSettings");
         appSettings = {
-            backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com/upload/",
-            username : "user_" + deviceUniqueID,
-            access_token : ""
+            backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com",
+            upload_path : "/upload/",
+            username : "user_" + deviceUniqueID
         };
 
         appStorage.setItem('appSettings', JSON.stringify(appSettings));
@@ -520,17 +540,36 @@ function loadApplicationData() {
         labelSets = JSON.parse(labelSets);
     }
     labelSetKeys = Object.keys(labelSets);
+
+    deviceUniqueIDBackup = appStorage.getItem('deviceUniqueIDBackup');
+
+    loggedinUser = appStorage.getItem('loggedinUser');
+    if (loggedinUser !== null) {
+        loggedinUser = JSON.parse(appStorage.getItem('loggedinUser'));
+    }
+
+    authToken = appStorage.getItem('authToken');
+    if (authToken !== null) {
+        authToken = JSON.parse(appStorage.getItem('authToken'));
+    }
+
 }
 
 function saveApplicationDataItem(itemKey) {
     // console.log(window[itemKey]);
-    appStorage.setItem(itemKey, JSON.stringify(window[itemKey]));
+    if (window[itemKey]) {
+        appStorage.setItem(itemKey, JSON.stringify(window[itemKey]));
+    } else {
+        appStorage.setItem(itemKey, null);
+    }
+
 }
 
 
 function saveSettings() {
     var formData = app.form.convertToData('#settings-form');
     // alert(JSON.stringify(formData));
+    formData.backend_endpoint = formData.backend_endpoint.replace(/\/$/, "");
     appSettings = formData;
 
     saveApplicationDataItem('appSettings');
@@ -545,10 +584,63 @@ function loadDefaultSettings() {
     // console.log(appSettings);
 
     var defaultSettings = {
-        backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com/upload/",
-        username : "user_" + deviceUniqueID,
-        access_token : ""
+        backend_endpoint : "http://mluploaddemo-env.us-east-1.elasticbeanstalk.com",
+        upload_path : "/upload/",
+        username : "user_" + deviceUniqueID
     };
 
     app.form.fillFromData('#settings-form', defaultSettings);
+}
+
+function resetAllAppData() {
+    app.dialog.confirm('This will reset all your application data. Including your saved collections and labels', function () {
+        localStorage.clear();
+        appStorage.clear();
+        loadApplicationData();
+        loadSettings();
+    });
+}
+
+function setAccountStatus() {
+    console.log(typeof loggedinUser);
+    if (loggedinUser) {
+        $$('input#loggedin_username').val(loggedinUser);
+        $$('#login-form-block').hide();
+        $$('#logout-form-block').show();
+    } else {
+        $$('#login-form-block').show();
+        $$('#logout-form-block').hide();
+    }
+}
+
+function login() {
+    var formData = app.form.convertToData('#login-form');
+    formData.device_id = deviceUniqueID;
+
+    app.request.post(appSettings.backend_endpoint + '/devicelogin', formData, function (data, status) {
+        console.log(data);
+        loggedinUser = formData.login_username;
+        authToken = data.authToken;
+        $$('input#loggedin_username').val(loggedinUser);
+        $$('#login-form-block').hide();
+        $$('#logout-form-block').show();
+        saveApplicationDataItem('loggedinUser');
+        saveApplicationDataItem('authToken');
+    }, function (xhr, status) {
+        console.log("Login error");
+        console.log(xhr);
+        console.log(status);
+        app.dialog.alert('Incorrect Username/Password');
+    }, 'json');
+}
+
+function logout() {
+    loggedinUser = undefined;
+    authToken = undefined;
+    $$('#login-form-block').show();
+    $$('#logout-form-block').hide();
+    // saveApplicationDataItem('loggedinUser');
+    // saveApplicationDataItem('authToken');
+    appStorage.removeItem('loggedinUser');
+    appStorage.removeItem('authToken');
 }
