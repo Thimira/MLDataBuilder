@@ -492,6 +492,7 @@ var collectionSet;
 var labelSets;
 var labelSetKeys;
 var loggedinUser;
+var loggedinUserID;
 var authToken;
 
 // **************************************
@@ -553,6 +554,11 @@ function loadApplicationData() {
         authToken = JSON.parse(appStorage.getItem('authToken'));
     }
 
+    loggedinUserID = appStorage.getItem('loggedinUserID');
+    if (loggedinUserID !== null) {
+        loggedinUserID = JSON.parse(appStorage.getItem('loggedinUserID'));
+    }
+
 }
 
 function saveApplicationDataItem(itemKey) {
@@ -602,7 +608,6 @@ function resetAllAppData() {
 }
 
 function setAccountStatus() {
-    console.log(typeof loggedinUser);
     if (loggedinUser) {
         $$('input#loggedin_username').val(loggedinUser);
         $$('#login-form-block').hide();
@@ -621,11 +626,15 @@ function login() {
         console.log(data);
         loggedinUser = formData.login_username;
         authToken = data.authToken;
+        loggedinUserID = data.userID;
+
         $$('input#loggedin_username').val(loggedinUser);
         $$('#login-form-block').hide();
         $$('#logout-form-block').show();
+
         saveApplicationDataItem('loggedinUser');
         saveApplicationDataItem('authToken');
+        saveApplicationDataItem('loggedinUserID');
     }, function (xhr, status) {
         console.log("Login error");
         console.log(xhr);
@@ -637,10 +646,12 @@ function login() {
 function logout() {
     loggedinUser = undefined;
     authToken = undefined;
+    loggedinUserID = undefined;
     $$('#login-form-block').show();
     $$('#logout-form-block').hide();
     // saveApplicationDataItem('loggedinUser');
     // saveApplicationDataItem('authToken');
     appStorage.removeItem('loggedinUser');
     appStorage.removeItem('authToken');
+    appStorage.removeItem('loggedinUserID');
 }

@@ -14,7 +14,7 @@ function uploadPhoto() {
 
 
             if (postUrl) {
-                if (loggedinUser && authToken) {
+                if (loggedinUser && authToken && loggedinUserID) {
                     var fileUploadOptions = new FileUploadOptions();
                     fileUploadOptions.fileKey = "image";
                     fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
@@ -26,6 +26,7 @@ function uploadPhoto() {
                     params.labelSet = selectedLabel.labelSet;
                     params.label = selectedLabel.label;
                     params.username = loggedinUser;
+                    params.userID = loggedinUserID;
                     params.access_token = authToken;
 
                     fileUploadOptions.params = params;
