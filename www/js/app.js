@@ -90,6 +90,7 @@ $$(document).on('deviceReady', function() {
     // loadingScreen.destroy();
 
     setInitialImage();
+    setAccountStatus();
 });
 
 $$(document).on('page:init', '.page[data-name="home"]', function (e) {
@@ -644,13 +645,27 @@ function login() {
 }
 
 function logout() {
+    var authData = {
+        device_id: deviceUniqueID,
+        auth_token: authToken
+    };
+
+    app.request.post(appSettings.backend_endpoint + '/devicelogout', authData, function (data, status) {
+        logoutComplete();
+    }, function (xhr, status) {
+        console.log("Logout error");
+        console.log(xhr);
+        console.log(status);
+        logoutComplete();
+    });
+}
+
+function logoutComplete() {
     loggedinUser = undefined;
     authToken = undefined;
     loggedinUserID = undefined;
     $$('#login-form-block').show();
     $$('#logout-form-block').hide();
-    // saveApplicationDataItem('loggedinUser');
-    // saveApplicationDataItem('authToken');
     appStorage.removeItem('loggedinUser');
     appStorage.removeItem('authToken');
     appStorage.removeItem('loggedinUserID');
