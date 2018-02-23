@@ -623,6 +623,8 @@ function login() {
     var formData = app.form.convertToData('#login-form');
     formData.device_id = deviceUniqueID;
 
+    var loginProgress = app.dialog.progress('Please Wait...');
+
     app.request.post(appSettings.backend_endpoint + '/devicelogin', formData, function (data, status) {
         console.log(data);
         loggedinUser = formData.login_username;
@@ -636,10 +638,13 @@ function login() {
         saveApplicationDataItem('loggedinUser');
         saveApplicationDataItem('authToken');
         saveApplicationDataItem('loggedinUserID');
+
+        loginProgress.close();
     }, function (xhr, status) {
         console.log("Login error");
         console.log(xhr);
         console.log(status);
+        loginProgress.close();
         app.dialog.alert('Incorrect Username/Password');
     }, 'json');
 }
@@ -650,13 +655,17 @@ function logout() {
         auth_token: authToken
     };
 
+    var logoutProgress = app.dialog.progress('Please Wait...');
+
     app.request.post(appSettings.backend_endpoint + '/devicelogout', authData, function (data, status) {
         logoutComplete();
+        logoutProgress.close();
     }, function (xhr, status) {
         console.log("Logout error");
         console.log(xhr);
         console.log(status);
         logoutComplete();
+        logoutProgress.close();
     });
 }
 
