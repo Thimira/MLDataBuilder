@@ -565,7 +565,7 @@ function loadApplicationData() {
 
     if (collectionSet === null) {
         console.log("Loading defaults for collectionSet");
-        collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Garden Flowers'}, { title: 'Faces'}];
+        collectionSet = [{ title: 'Supercars Dataset'}, { title: 'Common Flowers'}, { title: 'Iris Dataset'}];
 
         appStorage.setItem('collectionSet', JSON.stringify(collectionSet));
     } else {
@@ -579,7 +579,8 @@ function loadApplicationData() {
         console.log("Loading defaults for labelSets");
         labelSets = {
             Flowers : ['Anthurium', 'Carnation', 'Daffodil', 'Iris'],
-            Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport']
+            Cars : ['Ferrari 458 Italia', 'McLaren 675LT', 'Koenigsegg Agera R', 'Lamborghini Aventador', 'Nissan GTR', 'Bugatti Veyron Super Sport'],
+            Iris : ['Iris setosa', 'Iris virginica', 'Iris versicolor']
         };
 
         appStorage.setItem('labelSets', JSON.stringify(labelSets));
