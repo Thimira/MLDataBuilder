@@ -124,6 +124,9 @@ $$(document).on('page:afterin', function (e) {
             virtualListLabelSets.destroy();
         }
         createVListLabelSets();
+        currentViewLabel = 'index';
+
+        app.tab.show("#tab1");
     }
 
     if (page == '/settings/') {
@@ -161,15 +164,26 @@ function validateName(nameString) {
     return false;
 }
 
+function checkCollectionExists(collectionName) {
+    return collectionSet.some(function(collection, index) {
+        return collection.title === collectionName;
+    });
+}
+
 
 function addNewCollection() {
     app.dialog.prompt('Add New Data Collection', function (collectionName) {
-        if (validateName(collectionName)) {
-            var newCollection = { title : collectionName };
-            virtualListCollections.appendItem(newCollection);
+        if (!checkCollectionExists(collectionName)) {
+            if (validateName(collectionName)) {
+                var newCollection = { title : collectionName };
+                virtualListCollections.appendItem(newCollection);
 
-            saveApplicationDataItem('collectionSet');
+                saveApplicationDataItem('collectionSet');
+            } else {
+                addNewCollection();
+            }
         } else {
+            app.dialog.alert('The Collection name you entered already exists');
             addNewCollection();
         }
     });
@@ -178,13 +192,20 @@ function addNewCollection() {
 function editCollection(itemIndex) {
     var editingCollection = collectionSet[itemIndex].title;
     var editCollectionPrompt = app.dialog.prompt('Edit Data Collection \'' + editingCollection + '\'', function (collectionName) {
-        if (validateName(collectionName)) {
-            var newCollection = { title : collectionName };
-            virtualListCollections.replaceItem(itemIndex, newCollection);
+        if (collectionName !== editingCollection) {
+            if (!checkCollectionExists(collectionName)) {
+                if (validateName(collectionName)) {
+                    var newCollection = { title : collectionName };
+                    virtualListCollections.replaceItem(itemIndex, newCollection);
 
-            saveApplicationDataItem('collectionSet');
-        } else {
-            editCollection(itemIndex);
+                    saveApplicationDataItem('collectionSet');
+                } else {
+                    editCollection(itemIndex);
+                }
+            } else {
+                app.dialog.alert('The Collection name you entered already exists');
+                editCollection(itemIndex);
+            }
         }
     });
     $$(editCollectionPrompt.$el).find('input[type="text"]').val(editingCollection);
@@ -209,15 +230,20 @@ function addLabels() {
 
 function addNewLabelSet() {
     app.dialog.prompt('Add New Label Set', function (setName) {
-        if (validateName(setName)) {
-            labelSets[setName] = [];
-            labelSetKeys = Object.keys(labelSets);
+        if (labelSets[setName] === undefined) {
+            if (validateName(setName)) {
+                labelSets[setName] = [];
+                labelSetKeys = Object.keys(labelSets);
 
-            var newLabelSet = { label : setName };
-            virtualListLabelSets.appendItem(newLabelSet);
+                var newLabelSet = { label : setName };
+                virtualListLabelSets.appendItem(newLabelSet);
 
-            saveApplicationDataItem('labelSets');
+                saveApplicationDataItem('labelSets');
+            } else {
+                addNewLabelSet();
+            }
         } else {
+            app.dialog.alert('The LabelSet name you entered already exists');
             addNewLabelSet();
         }
     });
@@ -225,17 +251,24 @@ function addNewLabelSet() {
 
 function editLabelSet(itemIndex, currentName) {
     var editLabelSetPrompt = app.dialog.prompt('Edit Label Set \'' + currentName + '\'', function (setName) {
-        if (validateName(setName)) {
-            labelSets[setName] = labelSets[currentName];
-            delete labelSets[currentName];
-            labelSetKeys = Object.keys(labelSets);
+        if (setName !== currentName) {
+            if (labelSets[setName] === undefined) {
+                if (validateName(setName)) {
+                    labelSets[setName] = labelSets[currentName];
+                    delete labelSets[currentName];
+                    labelSetKeys = Object.keys(labelSets);
 
-            var newLabelSet = { label : setName };
-            virtualListLabelSets.replaceItem(itemIndex, newLabelSet);
+                    var newLabelSet = { label : setName };
+                    virtualListLabelSets.replaceItem(itemIndex, newLabelSet);
 
-            saveApplicationDataItem('labelSets');
-        } else {
-            editLabelSet(itemIndex);
+                    saveApplicationDataItem('labelSets');
+                } else {
+                    editLabelSet(itemIndex, currentName);
+                }
+            } else {
+                app.dialog.alert('The LabelSet name you entered already exists');
+                editLabelSet(itemIndex, currentName);
+            }
         }
     });
     $$(editLabelSetPrompt.$el).find('input[type="text"]').val(currentName);
@@ -261,13 +294,18 @@ function loadLabelDetails(itemIndex, selectedSet) {
 
 function addNewLabeltoLabelSet() {
     app.dialog.prompt('Add New Label to ' + currentViewLabel + ' Set', function (labelName) {
-        if (validateName(labelName)) {
-            var newLabel = { label : labelName };
-            virtualListLabelDetails.appendItem(newLabel);
-            labelSets[currentViewLabel].push(labelName);
+        if (labelSets[currentViewLabel].indexOf(labelName) === -1) {
+            if (validateName(labelName)) {
+                var newLabel = { label : labelName };
+                virtualListLabelDetails.appendItem(newLabel);
+                labelSets[currentViewLabel].push(labelName);
 
-            saveApplicationDataItem('labelSets');
+                saveApplicationDataItem('labelSets');
+            } else {
+                addNewLabeltoLabelSet();
+            }
         } else {
+            app.dialog.alert('The Label name you entered already exists in the LabelSet');
             addNewLabeltoLabelSet();
         }
     });
@@ -276,15 +314,22 @@ function addNewLabeltoLabelSet() {
 function editLabel(itemIndex) {
     var editingLabel = labelSets[currentViewLabel][itemIndex];
     var editLabelPrompt = app.dialog.prompt('Edit Label \'' + editingLabel + '\'', function (labelName) {
-        if (validateName(labelName)) {
-            labelSets[currentViewLabel][itemIndex] = labelName;
+        if (labelName !== editingLabel) {
+            if (labelSets[currentViewLabel].indexOf(labelName) === -1) {
+                if (validateName(labelName)) {
+                    labelSets[currentViewLabel][itemIndex] = labelName;
 
-            var newLabelName = { label : labelName };
-            virtualListLabelDetails.replaceItem(itemIndex, newLabelName);
+                    var newLabelName = { label : labelName };
+                    virtualListLabelDetails.replaceItem(itemIndex, newLabelName);
 
-            saveApplicationDataItem('labelSets');
-        } else {
-            editLabel(itemIndex);
+                    saveApplicationDataItem('labelSets');
+                } else {
+                    editLabel(itemIndex);
+                }
+            } else {
+                app.dialog.alert('The Label name you entered already exists in the LabelSet');
+                editLabel(itemIndex);
+            }
         }
     });
     $$(editLabelPrompt.$el).find('input[type="text"]').val(editingLabel);
