@@ -5,7 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover" />
         <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
         <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
-        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:;" />
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:;" /> -->
+
+        <!-- Allowing unsafe-eval to make VirtualLists work on desktop browser -->
+        <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data:;" />
 
         <meta charset="utf-8" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -28,15 +31,24 @@
             <div class="statusbar"></div>
 
             <!-- Left Panel with Reveal effect -->
-            <div class="panel panel-left panel-reveal">
+            <div class="panel panel-left panel-cover">
                 <div class="content-block">
                     <div class="list links-list">
                         <ul>
                             <li>
-                                <a href="index.html" data-force="true" data-ignore-cache="true" class="back">Capture</a>
+                                <a href="/" data-force="true" data-ignore-cache="true" class="back">Capture</a>
+                            </li>
+                            <li>
+                                <a href="/collections/">Collections</a>
                             </li>
                             <li>
                                 <a href="/labels/">Labels</a>
+                            </li>
+                            <li>
+                                <a href="/settings/">Settings</a>
+                            </li>
+                            <li>
+                                <a href="/account/">Account</a>
                             </li>
                             <li>
                                 <a href="/about/">About</a>
@@ -123,9 +135,6 @@
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col"><span id="message">&nbsp;</span></div>
                                 </div>
                             </div>
                         </div>

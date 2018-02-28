@@ -2,8 +2,8 @@
 img#imagePlaceholder {
     display: block;
     margin: 0 auto;
-    max-width:350px;
-    max-height: 350px;
+    max-width: 300px;
+    max-height: 300px;
 }
 
 div.imageContainer {
@@ -27,3 +27,10 @@ div[class*="col"] {
     /*width: calc(100% - (16px * 2));*/
 }
 
+input#picker-label {
+    width: 60vw;
+}
+
+input#picker-collection {
+    width: 60vw;
+}

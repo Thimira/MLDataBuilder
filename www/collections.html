@@ -2,7 +2,7 @@
 
 
 <!-- <div class="pages"> -->
-    <div data-page="about" class="page">
+    <div data-page="collections" class="page">
         <!-- Top Navbar-->
         <div class="navbar">
             <div class="navbar-inner">
@@ -12,16 +12,24 @@
                         <span>Back</span>
                     </a>
                 </div>
-                <div class="title">About</div>
+                <div class="title">Collections</div>
                 <div class="left panel-open">
                     <a href="#" class="link icon-only"><i class="material-icons">menu</i></a>
                 </div>
             </div>
         </div>
+
+        <div class="fab fab-right-bottom" onclick="addNewCollection();">
+            <a href="#">
+                <i class="material-icons md-36">add</i>
+            </a>
+        </div>
+
+
         <div class="page-content">
             <div class="block">
-                <p><b>ML Data Builder</b> v0.1 (Beta)</p>
-                <p>Use your smartphone to capture, label, and upload image datasets.</p>
+                <p class="list-group-title">Swipe left to delete an item</p>
+                <div class="list virtual-list simple-list collectionList"></div>
             </div>
         </div>
     </div>

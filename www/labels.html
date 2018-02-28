@@ -1,7 +1,7 @@
 <!-- We don't need a full layout in this file because this page will be parsed with Ajax. -->
 
 
-<div class="pages">
+<!-- <div class="pages"> -->
     <div data-page="labels" class="page">
         <!-- Top Navbar-->
         <div class="navbar">
@@ -18,91 +18,36 @@
                 </div>
             </div>
         </div>
-        <div class="page-content">
-            <div class="block">
-                <div class="list">
-                    <div class="list-group">
-                        <ul>
-                            <li class="list-group-title">Flowers</li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Anthurium</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Carnation</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Daffodil</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Iris</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+
+        <div class="fab fab-right-bottom" onclick="addLabels();">
+            <a href="#">
+                <i class="material-icons md-36">add</i>
+            </a>
+        </div>
+
+        <div class="tabs">
+            <div class="page-content tab tab-active labelSets" id="tab1">
+                <div class="block-title"><b>Label Sets</b></div>
+                <div class="block">
+                    <p class="list-group-title">Swipe right to view items in a set. Swipe left for options</p>
+                    <div class="list virtual-list labelSetsList"></div>
+                </div>
+            </div>
+
+            <div class="page-content tab labelDetails" id="tab2">
+                <div class="toolbar tabbar color-orange">
+                    <div class="toolbar-inner">
+                        <a href="#tab1" class="tab-link tab-link-active">
+                            &lt; Back to Label Sets
+                        </a>
+                        <a href="#" class="tab-link">&nbsp;</a>
                     </div>
-                    <div class="list-group">
-                        <ul>
-                            <li class="list-group-title">Cars</li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Ferrari 458 Italia</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">McLaren 675LT</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Koenigsegg Agera R</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Lamborghini Aventador</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Nissan GTR</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="item-content">
-                                    <div class="item-inner">
-                                        <div class="item-title">Bugatti Veyron Super Sport</div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
+                </div>
+                <div class="block">
+                    <p class="list-group-title">Swipe left for options</p>
+                    <div class="list virtual-list labelDetailList"></div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+<!-- </div> -->

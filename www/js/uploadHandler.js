@@ -1,45 +1,72 @@
+var uploadProgress; // Progress dialogbox
+
 /**
  * The image upload handler
  */
 function uploadPhoto() {
     if (imagePath == null) {
-        document.getElementById('message').innerHTML = "No Data";
+        displayToastMessage('No image data found to upload');
+        console.log(loggedinUser);
+        console.log(authToken);
+    } else {
+        if (selectedCollection && selectedLabel.labelSet && selectedLabel.label) {
+            var postUrl = appSettings.backend_endpoint + appSettings.upload_path;
+
+
+            if (postUrl) {
+                if (loggedinUser && authToken && loggedinUserID) {
+                    var fileUploadOptions = new FileUploadOptions();
+                    fileUploadOptions.fileKey = "image";
+                    fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+                    fileUploadOptions.mimeType = "image/png";
+                    fileUploadOptions.chunkedMode = true;
+
+                    var params = {};
+                    params.collection = selectedCollection;
+                    params.labelSet = selectedLabel.labelSet;
+                    params.label = selectedLabel.label;
+                    params.username = loggedinUser;
+                    params.userID = loggedinUserID;
+                    params.access_token = authToken;
+
+                    fileUploadOptions.params = params;
+
+                    var fileTransfer = new FileTransfer();
+
+                    uploadProgress = app.dialog.progress('Please Wait...');
+
+                    fileTransfer.onprogress = function(progressEvent) {
+                        if (progressEvent.lengthComputable) {
+                            var percentage = Math.floor(progressEvent.loaded / progressEvent.total) * 100;
+                            uploadProgress.setProgress(percentage);
+
+                            if (progressEvent.loaded === progressEvent.total) {
+                                uploadProgress.close();
+                            }
+                        }
+                    };
+
+                    fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
+                } else {
+                    displayToastMessage('You haven\'t logged in. Please login');
+                }
+            } else {
+                displayToastMessage('Backend URL not set. Please set it in the application settings');
+            }
+        } else {
+            displayToastMessage('Data collection and Label should be selected');
+        }
     }
-
-    var postUrl = "http://10.98.204.74:3005/upload/";
-
-    var fileUploadOptions = new FileUploadOptions();
-    fileUploadOptions.fileKey = "image";
-    fileUploadOptions.fileName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-    fileUploadOptions.mimeType = "image/png";
-    fileUploadOptions.chunkedMode = true;
-
-    var fileTransfer = new FileTransfer();
-
-    // Uncomment below when adding the progressbar
-
-    // var progressBar = document.querySelector('progress');
-
-    // fileTransfer.onprogress = function (result) {
-    //     var percent = (result.loaded / result.total) * 100;
-    //     percent = Math.round(percent);
-    //     progressBar.value = percent;
-    //     progressBar.textContent = progressBar.value;
-    // };
-
-    // progressBar.value = 0;
-    // progressBar.textContent = progressBar.value;
-    // $("#spResult").text("");
-
-    fileTransfer.upload(imagePath, postUrl, uploadPhotoWin, uploadPhotoFail, fileUploadOptions);
 }
 
 /**
  * Success callback for upload
- * @param r : the response object
+ * @param res : the response object
  */
 function uploadPhotoWin(res) {
-    document.getElementById('message').innerHTML = "Sent = " + res.bytesSent + "\n Response = " + res.response + "\n Code = " + res.responseCode + "\n";
+    uploadProgress.close();
+    var messageText = "Sent = " + res.bytesSent + " Response = " + res.response + " Code = " + res.responseCode;
+    displayToastMessage(messageText);
 }
 
 /**
@@ -47,15 +74,26 @@ function uploadPhotoWin(res) {
  * @param error : the received error object
  */
 function uploadPhotoFail(error) {
+    uploadProgress.close();
+
     switch (error.code) {
         case FileTransferError.FILE_NOT_FOUND_ERR:
-            document.getElementById('message').innerHTML = "Photo file not found";
+            displayToastMessage("Image file not found");
             break;
         case FileTransferError.INVALID_URL_ERR:
-            document.getElementById('message').innerHTML = "Bad Photo URL";
+            displayToastMessage("Invalid URL");
             break;
         case FileTransferError.CONNECTION_ERR:
-            document.getElementById('message').innerHTML = "Connection error";
+            displayToastMessage("Connection error");
             break;
     }
+}
+
+function displayToastMessage(message) {
+    var toastWithButton = app.toast.create({
+            text: message,
+            closeButton: true
+        });
+
+        toastWithButton.open();
 }

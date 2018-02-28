@@ -1,0 +1,72 @@
+<!-- We don't need a full layout in this file because this page will be parsed with Ajax. -->
+
+
+<!-- <div class="pages"> -->
+    <div data-page="account" class="page">
+        <!-- Top Navbar-->
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link">
+                        <i class="icon icon-back"></i>
+                        <span>Back</span>
+                    </a>
+                </div>
+                <div class="title">Account</div>
+                <div class="left panel-open">
+                    <a href="#" class="link icon-only"><i class="material-icons">menu</i></a>
+                </div>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="block" id="login-form-block">
+                <form class="list" id="login-form">
+                    <ul>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Username</div>
+                                    <div class="item-input-wrap">
+                                        <input type="email" name="login_username" placeholder="Your Username/Email">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Password</div>
+                                    <div class="item-input-wrap">
+                                        <input type="password" name="login_password" placeholder="Your Password">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+                <div class="block block-strong row">
+                    <div class="col"><a class="button button-fill" onclick="login()" href="#">Login</a></div>
+                </div>
+            </div>
+            <div class="block" id="logout-form-block">
+                <form class="list" id="logout-form">
+                    <ul>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Logged in as</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" id="loggedin_username" name="loggedin_username" disabled="disabled">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+                <div class="block block-strong row">
+                    <div class="col"><a class="button button-fill" onclick="logout()" href="#">Logout</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- </div> -->

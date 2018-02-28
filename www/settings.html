@@ -1,0 +1,59 @@
+<!-- We don't need a full layout in this file because this page will be parsed with Ajax. -->
+
+
+<!-- <div class="pages"> -->
+    <div data-page="settings" class="page">
+        <!-- Top Navbar-->
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="back link">
+                        <i class="icon icon-back"></i>
+                        <span>Back</span>
+                    </a>
+                </div>
+                <div class="title">Settings</div>
+                <div class="left panel-open">
+                    <a href="#" class="link icon-only"><i class="material-icons">menu</i></a>
+                </div>
+            </div>
+        </div>
+        <div class="page-content">
+            <div class="block">
+                <form class="list" id="settings-form">
+                    <ul>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Backend Endpoint</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" name="backend_endpoint" placeholder="Your backend URL">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Upload Path</div>
+                                    <div class="item-input-wrap">
+                                        <input type="text" name="upload_path" placeholder="Path to Upload in Backend">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+                <div class="block block-strong row">
+                    <div class="col"><a class="button button-outline" onclick="loadDefaultSettings()" href="#">Defaults</a></div>
+                    <div class="col"><a class="button button-fill" onclick="saveSettings()" href="#">Save</a></div>
+                </div>
+                <div class="block block-strong row">
+                    <div class="col"></div>
+                    <div class="col"><a class="button button-outline" onclick="resetAllAppData()" href="#">Reset App Data</a></div>
+                    <div class="col"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- </div> -->
