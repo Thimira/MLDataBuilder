@@ -349,7 +349,11 @@ function deleteLabel(itemIndex) {
  * Sets the 'No Image' icon to the image placeholder
  */
 function setInitialImage() {
-    placeImage("img/no-image.jpg");
+    if (imagePath) {
+        placeImage(imagePath);
+    } else {
+        placeImage("img/no-image.jpg");
+    }
 }
 
 
