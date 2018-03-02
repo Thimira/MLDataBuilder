@@ -65,7 +65,13 @@ function uploadPhoto() {
  */
 function uploadPhotoWin(res) {
     uploadProgress.close();
-    var messageText = "Sent = " + res.bytesSent + " Response = " + res.response + " Code = " + res.responseCode;
+    var messageText;
+    if (res.responseCode === 200) {
+        messageText = "Upload Successful";
+    } else {
+        messageText = "Upload Error: " + res.response;
+    }
+    console.log("Sent = " + res.bytesSent + " Response = " + res.response + " Code = " + res.responseCode);
     displayToastMessage(messageText);
 }
 
